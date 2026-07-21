@@ -195,6 +195,65 @@
     border:1px solid rgba(180,140,255,.3);border-radius:12px;padding:12px 14px;font-size:11.5px;color:#D9C6FF;line-height:1.45}
   #dv .back{margin-left:auto;font-size:12px;font-weight:800;color:#FFB2E4;padding:8px}
 
+  /* ---------- mode: live channel (fullscreen) vs store (youtube layout) ---------- */
+  #app.mode-live #player-wrap{position:fixed;inset:0;width:100%;height:100%;aspect-ratio:auto}
+  #app.mode-live #chbar,#app.mode-live #store{display:none}
+  #app.mode-store #banner,#app.mode-store #remote,#app.mode-store #coach{display:none}
+
+  #banner{position:absolute;left:12px;bottom:calc(78px + env(safe-area-inset-bottom,0px));z-index:3;
+    display:flex;align-items:center;gap:8px;background:rgba(0,0,0,.55);border-radius:11px;padding:7px 10px 7px 8px}
+  #banner .cn{font-weight:800;background:rgba(255,255,255,.15);border-radius:6px;padding:2px 8px;font-size:12px}
+  #banner .nm{font-size:13px;font-weight:700}
+  #banner .hb{width:26px;height:26px;border-radius:50%;background:rgba(255,255,255,.12);color:#FFB2E4;
+    display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;margin-left:2px}
+
+  /* channel remote (right rail) */
+  #remote{position:absolute;right:12px;top:50%;transform:translateY(-50%);z-index:4;
+    display:flex;flex-direction:column;align-items:center;background:rgba(0,0,0,.5);
+    border:1px solid rgba(255,255,255,.16);border-radius:999px;overflow:hidden}
+  #remote button{width:48px;height:46px;font-size:19px;color:#fff;display:flex;align-items:center;justify-content:center}
+  #remote button:active{background:rgba(217,0,141,.35)}
+  #remote .lbl{font-size:9px;font-weight:800;color:#FFB2E4;letter-spacing:.08em;padding:3px 0}
+
+  #coach{position:absolute;right:72px;top:50%;transform:translateY(-50%);z-index:5;max-width:186px;
+    background:#D9008D;color:#fff;border-radius:13px;padding:11px 13px;font-size:12.5px;font-weight:700;line-height:1.35;
+    box-shadow:0 10px 28px rgba(0,0,0,.45);animation:bob 1.7s ease-in-out infinite}
+  #coach::after{content:"";position:absolute;right:-7px;top:50%;transform:translateY(-50%);
+    border:7px solid transparent;border-left-color:#D9008D}
+  @keyframes bob{50%{transform:translateY(-50%) translateX(-6px)}}
+
+  /* toast coach (store reveal etc.) */
+  #toast{position:fixed;left:14px;right:14px;bottom:calc(80px + env(safe-area-inset-bottom,0px));z-index:96;
+    background:#D9008D;color:#fff;border-radius:13px;padding:13px 15px;font-size:13px;font-weight:700;line-height:1.4;
+    box-shadow:0 12px 34px rgba(0,0,0,.5);text-align:center;transform:translateY(20px);opacity:0;
+    transition:transform .35s cubic-bezier(.16,1,.3,1),opacity .35s;pointer-events:none}
+  #toast.on{transform:translateY(0);opacity:1}
+
+  /* CRT static beat between channels */
+  #crt{position:fixed;inset:0;z-index:50;background:#0a0a0a;display:flex;flex-direction:column;
+    align-items:center;justify-content:center;gap:8px}
+  #crt .noise{position:absolute;inset:0;opacity:.5;mix-blend-mode:screen;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+    background-size:170px 170px;animation:snow .16s steps(3) infinite}
+  @keyframes snow{0%{background-position:0 0}33%{background-position:40px -30px}66%{background-position:-30px 50px}100%{background-position:20px 10px}}
+  #crt .scan{position:absolute;left:0;right:0;height:32%;background:linear-gradient(transparent,rgba(255,255,255,.06),transparent);
+    animation:sweep 1.4s linear infinite}
+  @keyframes sweep{0%{top:-32%}100%{top:100%}}
+  #crt .num{position:relative;font-size:60px;font-weight:900;color:#FFB2E4;text-shadow:0 0 18px rgba(217,0,141,.6);animation:flick .1s steps(1) 4}
+  @keyframes flick{50%{opacity:.55}}
+  #crt .nm{position:relative;font-size:14px;font-weight:700;color:#FAF9FC;letter-spacing:1px}
+  #crt.hide{display:none}
+
+  /* Dashverse -> back to Wiom popup */
+  #dvpop{position:absolute;left:14px;right:14px;bottom:calc(84px + env(safe-area-inset-bottom,0px));z-index:6;
+    background:#1D1526;border:1px solid rgba(255,178,228,.3);border-radius:16px;padding:14px 15px;
+    display:flex;align-items:center;gap:12px;box-shadow:0 14px 40px rgba(0,0,0,.6);animation:slideup .42s cubic-bezier(.16,1,.3,1)}
+  @keyframes slideup{from{transform:translateY(28px);opacity:0}}
+  #dvpop .di{flex:1;min-width:0}
+  #dvpop .dt{font-size:13px;font-weight:800}
+  #dvpop .dd{font-size:11px;color:#A7A1B2;margin-top:2px;line-height:1.35}
+  #dvpop .dgo{background:#D9008D;border-radius:11px;padding:11px 14px;font-size:12.5px;font-weight:800;white-space:nowrap;flex:0 0 auto}
+
   /* ---------- demo bar ---------- */
   #demo{position:fixed;left:0;right:0;bottom:0;z-index:95;display:flex;gap:7px;padding:9px 10px calc(9px + env(safe-area-inset-bottom,0px));
     background:linear-gradient(transparent,rgba(11,8,18,.94) 34%);pointer-events:none}
@@ -209,18 +268,29 @@
 </head>
 <body>
 
-<div id="app">
+<div id="app" class="mode-live">
   <div id="player-wrap">
     <video id="tv" playsinline muted autoplay></video>
     <div id="tv-fallback" style="background-image:url(data:image/jpeg;base64,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)"></div>
     <div class="lv"><i></i>LIVE</div>
     <button id="tv-sound">&#128263;</button>
     <div class="redline"></div>
+    <div id="banner"><span class="cn">2</span><span class="nm">Dangal TV</span><button class="hb" id="helpbtn2">?</button></div>
+    <div id="remote">
+      <button id="ch-up">▲</button><span class="lbl">CH</span><button id="ch-dn">▼</button>
+    </div>
+    <div id="coach">प्रोमो चैनल देखने के लिए चैनल बदलें →</div>
   </div>
   <div id="chbar"><span class="cn">2</span><span class="nm">Dangal TV</span>
     <button id="helpbtn">?</button><span class="all">सभी चैनल ›</span></div>
   <div id="store"></div>
 </div>
+
+<!-- CRT static beat -->
+<div id="crt" class="hide"><div class="noise"></div><div class="scan"></div>
+  <div class="num"></div><div class="nm"></div></div>
+
+<div id="toast"></div>
 
 <!-- promo -->
 <div id="promo" class="hide">
@@ -311,6 +381,75 @@ const fmt = ms => {
   };
 })();
 
+/* ---------- channels + mode + coaching ---------- */
+const CH = [ {ch:2, name:'Dangal TV', live:true}, {ch:21, name:'माइक्रोड्रामा', md:true} ];
+let ci = 0;
+
+function setMode(m){ $('app').className = 'mode-' + m; }
+const mode = () => $('app').classList.contains('mode-store') ? 'store' : 'live';
+
+function setBanner(){
+  const c = CH[ci];
+  $('banner').querySelector('.cn').textContent = c.ch;
+  $('banner').querySelector('.nm').textContent = c.name;
+}
+function dismissCoach(){ const c = $('coach'); if (c) c.style.display = 'none'; }
+
+let toastT = null;
+function toast(msg, ms){
+  const t = $('toast'); t.textContent = msg; t.classList.add('on');
+  clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove('on'), ms || 3600);
+}
+
+/* CRT static beat, then callback */
+function crt(num, name, cb){
+  const c = $('crt');
+  c.querySelector('.num').textContent = num;
+  c.querySelector('.nm').textContent = name;
+  c.classList.remove('hide');
+  setTimeout(() => { c.classList.add('hide'); cb && cb(); }, 750);
+}
+
+/* channel remote: only two channels, so up/down both flip */
+function tuneChannel(dir){
+  dismissCoach();
+  ci = (ci + dir + CH.length) % CH.length;
+  const c = CH[ci];
+  setBanner();
+  crt(c.ch, c.name, () => {
+    if (c.md) openPromo('dashverse', firstUnseen('dashverse'));   // microdrama channel = promos
+    // live channel: #tv keeps playing underneath, nothing else to do
+  });
+}
+$('ch-up').onclick = () => tuneChannel(1);
+$('ch-dn').onclick = () => tuneChannel(-1);
+
+/* rotate to a show the viewer hasn't seen yet (falls back to first) */
+function firstUnseen(appKey){
+  const shows = APPS[appKey].shows, seen = S.seen || [];
+  for (let i = 0; i < shows.length; i++){ const k = appKey + ':' + i; if (!seen.includes(k)) return i; }
+  return 0;
+}
+function markSeen(appKey, idx){
+  S.seen = S.seen || []; const k = appKey + ':' + idx;
+  if (!S.seen.includes(k)) { S.seen.push(k); save(S); }
+}
+
+/* returning from any partner app -> reveal the sachet store as the home */
+function returnToWiom(){
+  ['dv','ps','succ'].forEach(i => { const el = $(i); if (el) el.remove(); });
+  const pop = $('dvpop'); if (pop) pop.remove();
+  $('promo').classList.add('hide');
+  try { pv.pause(); pv.removeAttribute('src'); pv.removeAttribute('poster'); pv.load(); } catch {}
+  pv.classList.remove('frozen');
+  clearTimeout(staticT); cur = null;
+  setMode('store'); ci = 0; setBanner();
+  $('tv').play().catch(()=>{});
+  renderStore();
+  if (!S.storeSeen){ S.storeSeen = 1; save(S);
+    setTimeout(() => toast('यह है आपका पैक स्टोर 👇 किसी भी शो पर टैप करके फिर देखें', 5000), 500); }
+}
+
 /* ---------- store rendering ---------- */
 function appBlock(key){
   const a = APPS[key];
@@ -367,33 +506,55 @@ setInterval(() => {
 }, 1000);
 
 /* ---------- promo playback ---------- */
-let cur = null;                       // {app, show}
+let cur = null;                       // {app, idx}
 const pv = $('pv');
 let forced = false;
+let staticT = null;
 
-function openPromo(appKey, idx){
-  const a = APPS[appKey], s = a.shows[idx];
-  if (!s.slug) { openSheet(appKey); return; }   // no promo file in this mock -> straight to the offer
-  cur = { app: appKey, idx };
+function promoChrome(appKey, s){
   $('promo').classList.remove('hide');
+  pv.classList.remove('frozen');
   $('chip').querySelector('.nm').textContent = s.title;
   const unl = hasPack() && S.pack.app === appKey;
   $('chip').querySelector('.ct').textContent = unl ? 'अनलॉक्ड' : 'प्रोमो';
   $('chip').querySelector('.ct').className = 'ct' + (unl ? ' unl' : '');
   updatePill();
-  pv.src = 'md/' + s.slug + '.mp4';
-  pv.currentTime = 0; pv.load();
-  pv.play().catch(() => {
-    pv.muted = true; forced = true;
-    pv.play().then(()=> $('punmute').classList.remove('hide')).catch(()=>{});
-  });
   $('tv').pause();
 }
+
+function openPromo(appKey, idx){
+  const s = APPS[appKey].shows[idx];
+  cur = { app: appKey, idx };
+  markSeen(appKey, idx);
+  clearTimeout(staticT);
+  if (s.slug){                                    // Dashverse: real promo video
+    promoChrome(appKey, s);
+    $('pprog').style.display = '';
+    pv.removeAttribute('poster');
+    pv.src = 'md/' + s.slug + '.mp4';
+    pv.currentTime = 0; pv.load();
+    pv.play().catch(() => {
+      pv.muted = true; forced = true;
+      pv.play().then(()=> $('punmute').classList.remove('hide')).catch(()=>{});
+    });
+  } else {                                        // others: static beat, then poster-as-promo, then offer
+    crt('▶', APPS[appKey].name, () => {
+      if (!cur || cur.app !== appKey) return;
+      promoChrome(appKey, s);
+      $('pprog').style.display = 'none';
+      pv.removeAttribute('src');
+      pv.poster = s.poster; pv.load();
+      staticT = setTimeout(() => { if (cur && cur.app === appKey){ pv.classList.add('frozen'); openSheet(appKey); } }, 2600);
+    });
+  }
+}
 function closePromo(){
+  clearTimeout(staticT);
   $('promo').classList.add('hide');
-  try { pv.pause(); pv.removeAttribute('src'); pv.load(); } catch {}
+  try { pv.pause(); pv.removeAttribute('src'); pv.removeAttribute('poster'); pv.load(); } catch {}
   pv.classList.remove('frozen'); $('punmute').classList.add('hide');
   closeSheet(); cur = null;
+  if (mode() === 'live'){ ci = 0; setBanner(); }   // leaving the promo channel -> back to live TV
   $('tv').play().catch(()=>{});
   renderStore();
 }
@@ -473,7 +634,7 @@ function showSuccess(appKey){
     <button class="alt" id="laterbtn">बाद में — Wiom TV पर रहें</button>`;
   document.body.appendChild(d);
   $('openapp').onclick = () => { d.remove(); showStore(appKey); };
-  $('laterbtn').onclick = () => { d.remove(); closePromo(); };
+  $('laterbtn').onclick = () => { d.remove(); returnToWiom(); };   // bought -> store is now home
 }
 
 function showStore(appKey){
@@ -510,7 +671,18 @@ function showApp(appKey){
         <div class="sb">वहीं से जहाँ प्रोमो ख़त्म हुआ था</div></div></div>
     <div class="bulk">पैक ख़त्म होने के बाद ${a.name} का पूरा प्लान — ₹299/महीना</div>`;
   document.body.appendChild(d);
-  $('backwiom').onclick = () => { d.remove(); closePromo(); };
+  $('backwiom').onclick = returnToWiom;
+  // The bridge back: a Wiom prompt surfaces over the partner app after a beat.
+  setTimeout(() => {
+    if (!document.getElementById('dv')) return;
+    const pop = document.createElement('div');
+    pop.id = 'dvpop';
+    pop.innerHTML = `<div class="di"><div class="dt">Wiom TV पर और भी शोज़ 🎬</div>
+        <div class="dd">आपका पैक Wiom के सारे शोज़ पर चलता है — वापस जाकर देखें</div></div>
+      <button class="dgo" id="dvgo">Wiom TV →</button>`;
+    d.appendChild(pop);
+    $('dvgo').onclick = returnToWiom;
+  }, 2400);
 }
 
 /* ---------- taps ---------- */
@@ -545,6 +717,7 @@ function openHelp(){
   $('hclose').onclick = () => d.remove();
 }
 $('helpbtn').onclick = openHelp;
+$('helpbtn2').onclick = openHelp;
 $('trusthelp').onclick = openHelp;
 
 /* ---------- demo controls ---------- */
@@ -552,15 +725,28 @@ $('demo').addEventListener('click', e => {
   const b = e.target.closest('[data-d]'); if (!b) return;
   const d = b.dataset.d;
   if (d === 'end'){
-    if (!$('promo').classList.contains('hide') && pv.duration) pv.currentTime = Math.max(0, pv.duration - 3);
-    else alert('पहले कोई प्रोमो चलाएँ — नीचे किसी पोस्टर पर टैप करें');
+    if ($('promo').classList.contains('hide')){ toast('पहले प्रोमो चैनल पर जाएँ या किसी शो पर टैप करें'); return; }
+    if (pv.duration && !isNaN(pv.duration)) pv.currentTime = Math.max(0, pv.duration - 3);   // real video
+    else if (cur){ clearTimeout(staticT); pv.classList.add('frozen'); openSheet(cur.app); }  // static promo
   }
   if (d === 'low' && hasPack()){ S.pack.until = Date.now() + 2*60e3; save(S); renderStore(); updatePill(); }
   if (d === 'expire'){ if (S.pack){ S.last = {app:S.pack.app, at:'अभी', used:'9 शोज़'}; delete S.pack; save(S); } renderStore(); updatePill(); }
-  if (d === 'reset'){ S = {}; save(S); ['succ','ps','dv'].forEach(i => { const el = $(i); if (el) el.remove(); });
-                      closePromo(); renderStore(); }
+  if (d === 'reset'){
+    S = {}; save(S);
+    ['succ','ps','dv','dvpop'].forEach(i => { const el = $(i); if (el) el.remove(); });
+    clearTimeout(staticT);
+    $('promo').classList.add('hide');
+    try { pv.pause(); pv.removeAttribute('src'); pv.removeAttribute('poster'); pv.load(); } catch {}
+    pv.classList.remove('frozen'); closeSheet(); cur = null;
+    setMode('live'); ci = 0; setBanner();
+    const c = $('coach'); if (c) c.style.display = '';
+    $('tv').play().catch(()=>{});
+    renderStore();
+  }
 });
 
+/* ---------- boot: a live channel is already playing ---------- */
+setMode('live'); ci = 0; setBanner();
 renderStore();
 </script>
 </body>
