@@ -264,6 +264,27 @@
   #helpbtn{width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.09);
     display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:#FFB2E4;flex:0 0 auto}
   @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+  /* ══ UI GUIDE (added) — demo scaffolding. Deliberately NOT a Wiom product
+     colour, so it can never be mistaken for real UI. ══ */
+  #uig-spot{position:fixed;z-index:9997;border-radius:12px;pointer-events:none;
+    box-shadow:0 0 0 3px #B98CFF,0 0 0 9999px rgba(6,4,11,.58);
+    transition:all .28s cubic-bezier(.2,.8,.3,1);animation:uigHalo 1.6s ease-in-out infinite}
+  @keyframes uigHalo{50%{box-shadow:0 0 0 6px rgba(185,140,255,.55),0 0 0 9999px rgba(6,4,11,.58)}}
+  #uig{position:fixed;z-index:9998;max-width:250px;background:#241437;border:1.5px solid #B98CFF;
+    border-radius:12px;padding:11px 13px;box-shadow:0 14px 38px rgba(0,0,0,.72);
+    transition:all .28s cubic-bezier(.2,.8,.3,1)}
+  #uig .lb{display:flex;align-items:center;gap:5px;font-size:9px;font-weight:900;letter-spacing:.14em;
+    text-transform:uppercase;color:#B98CFF;margin-bottom:4px}
+  #uig .lb::before{content:"\25C6"}
+  #uig .tx{font-size:12.5px;font-weight:700;line-height:1.4;color:#FAF9FC}
+  #uig .tx b{color:#B98CFF}
+  #uig-btn{position:fixed;z-index:9999;top:calc(9px + env(safe-area-inset-top,0px));left:50%;
+    transform:translateX(-50%);background:#6D17CE;color:#fff;border-radius:999px;padding:5px 12px;
+    font-size:10px;font-weight:900;letter-spacing:.1em;text-transform:uppercase;
+    box-shadow:0 4px 14px rgba(0,0,0,.5);border:1px solid #B98CFF}
+  #uig-btn.off{background:rgba(10,6,18,.7);border-color:rgba(255,255,255,.25);color:#A7A1B2}
+  body.uig-off #uig,body.uig-off #uig-spot{display:none!important}
 </style>
 </head>
 <body>
@@ -748,6 +769,145 @@ $('demo').addEventListener('click', e => {
 /* ---------- boot: a live channel is already playing ---------- */
 setMode('live'); ci = 0; setBanner();
 renderStore();
+
+/* ══════════════════════════════════════════════════════════════════════════
+   UI GUIDE + flow variant — ADDITIVE ONLY. Nothing above this line is changed;
+   the original functions are wrapped, not edited, so the experience is the
+   same walk it always was.
+
+   ?flow=wiom     sachet store WITHOUT the third-party platform — after paying,
+                  the viewer stays on Wiom. The install path is not offered.
+   ?flow=partner  the original: pay, then install the partner app. (default)
+   ══════════════════════════════════════════════════════════════════════════ */
+(function(){
+  var FLOW = (new URLSearchParams(location.search).get('flow') === 'wiom') ? 'wiom' : 'partner';
+
+  var spot = document.createElement('div'); spot.id = 'uig-spot'; spot.style.display = 'none';
+  var box  = document.createElement('div'); box.id  = 'uig';      box.style.display  = 'none';
+  box.innerHTML = '<div class="lb">UI guide</div><div class="tx"></div>';
+  var btn  = document.createElement('button'); btn.id = 'uig-btn'; btn.textContent = '◆ UI guide';
+  document.body.appendChild(spot); document.body.appendChild(box); document.body.appendChild(btn);
+
+  var on = true, last = null;
+  btn.onclick = function(){
+    on = !on;
+    document.body.classList.toggle('uig-off', !on);
+    btn.classList.toggle('off', !on);
+    if (on && last) guide(last.sel, last.txt);
+  };
+
+  /* place the ring + callout over whatever must be pressed next */
+  function guide(sel, txt, delay){
+    last = {sel:sel, txt:txt};
+    setTimeout(function(){
+      if (!on) return;
+      box.querySelector('.tx').innerHTML = txt;
+      box.style.display = 'block';
+      var el = sel ? document.querySelector(sel) : null;
+      var vis = el && el.offsetParent !== null && el.getBoundingClientRect().width > 0;
+      var W = innerWidth, H = innerHeight;
+      if (vis){
+        var r = el.getBoundingClientRect(), pad = 6;
+        /* first appearance: land on the target instead of sliding in from the corner */
+        var fresh = spot.style.display === 'none';
+        if (fresh){ spot.style.transition = 'none'; box.style.transition = 'none'; }
+        spot.style.display = 'block';
+        spot.style.left = (r.left - pad) + 'px';  spot.style.top = (r.top - pad) + 'px';
+        spot.style.width = (r.width + pad*2) + 'px'; spot.style.height = (r.height + pad*2) + 'px';
+        var bw = box.offsetWidth, bh = box.offsetHeight;
+        box.style.left = Math.max(10, Math.min(r.left - 8, W - bw - 10)) + 'px';
+        var below = r.bottom + 14 + bh < H - 10;
+        /* never park the callout on top of another button the viewer can press */
+        var bl = parseFloat(box.style.left) || 10;
+        var covers = function(top){
+          var c = {l:bl, r:bl+bw, t:top, b:top+bh};
+          return [].some.call(document.querySelectorAll('button,.cta,.alt,.install,.open'), function(o){
+            if (o === el || o.offsetParent === null) return false;
+            var q = o.getBoundingClientRect();
+            if (!q.width || !q.height) return false;
+            return c.l < q.right && c.r > q.left && c.t < q.bottom && c.b > q.top;
+          });
+        };
+        var topBelow = r.bottom + 14, topAbove = Math.max(10, r.top - bh - 14);
+        if (below && covers(topBelow) && r.top - bh - 14 > 10 && !covers(topAbove)) below = false;
+        box.style.top = (below ? topBelow : topAbove) + 'px';
+        if (fresh) requestAnimationFrame(function(){ spot.style.transition = ''; box.style.transition = ''; });
+      } else {
+        spot.style.display = 'none';
+        box.style.left = '10px';
+        box.style.top  = Math.max(10, H - box.offsetHeight - 96) + 'px';
+      }
+    }, delay || 60);
+    /* Screens animate in AND carry <img> (app logos, posters) that reflow the centred
+       column when they decode — measuring once leaves the ring behind. Settle again on a
+       timer, and again whenever a still-loading image in this screen finishes. */
+    if (delay !== 0){
+      setTimeout(function(){ if (on && last && last.sel === sel) guide(sel, txt, 0); }, (delay || 60) + 450);
+      setTimeout(function(){
+        var el2 = sel ? document.querySelector(sel) : null;
+        var scope = (el2 && el2.closest('#succ,#ps,#dv,#app')) || document;
+        scope.querySelectorAll('img').forEach(function(im){
+          if (!im.complete) im.addEventListener('load', function(){
+            if (on && last && last.sel === sel) guide(sel, txt, 0);
+          }, {once:true});
+        });
+      }, (delay || 60) + 20);
+    }
+  }
+  function clearGuide(){ last = null; spot.style.display = 'none'; box.style.display = 'none'; }
+  addEventListener('resize', function(){ if (last) guide(last.sel, last.txt, 0); });
+
+  /* ── wrap the existing lifecycle points; none of them are modified ── */
+  var _tune = tuneChannel;
+  tuneChannel = function(d){ clearGuide(); _tune(d);
+    guide(null, 'प्रोमो चैनल चालू. The promo plays like any other channel — nothing is gated yet.', 1000); };
+
+  var _openSheet = openSheet;
+  openSheet = function(k){ _openSheet(k);
+    guide('#paybtn', 'Promo ends and the offer slides up. <b>Press ₹10 देकर देखते रहिए</b> — this is the promo-to-purchase moment.', 520); };
+
+  var _closeSheet = closeSheet;
+  closeSheet = function(){ _closeSheet(); clearGuide(); };
+
+  var _showSuccess = showSuccess;
+  showSuccess = function(k){
+    _showSuccess(k);
+    if (FLOW === 'wiom'){
+      /* no third-party platform in this variant: drop the install door entirely
+         and promote the stay-on-Wiom button to the primary action */
+      var open = document.getElementById('openapp'); if (open) open.remove();
+      var later = document.getElementById('laterbtn');
+      if (later){
+        later.className = 'cta';
+        later.textContent = 'Wiom TV पर देखते रहिए →';
+      }
+      /* the stock line promises the partner app — there isn't one in this variant */
+      var sub = document.querySelector('#succ .s');
+      if (sub){
+        var b = sub.querySelector('b');
+        sub.innerHTML = 'अब ' + (b ? b.outerHTML : 'यह शो') + ' यहीं Wiom TV पर वहीं से चलेगा';
+      }
+      guide('#laterbtn', 'Paid. <b>The viewer stays on Wiom</b> — nothing to install, nothing to log into. Straight into the sachet store.', 420);
+    } else {
+      guide('#openapp', 'Paid. <b>This is the only step option 2 does not have</b> — the partner app is opened, carrying a signed token.', 420);
+    }
+  };
+
+  var _showStore = showStore;
+  showStore = function(k){ _showStore(k);
+    guide('#installbtn', 'The store page. <b>Press Install</b> — Wiom sends a token with this link so the app knows who they are.', 420); };
+
+  var _showApp = showApp;
+  showApp = function(k){ _showApp(k);
+    guide(null, 'Watching continues inside the partner app — <b>no second login, no second payment</b>. The token carried it across.', 700); };
+
+  var _return = returnToWiom;
+  returnToWiom = function(){ _return();
+    guide('#store .runcard .open', 'This is the sachet store — <b>your pack, on Wiom</b>. Tap any show to carry on watching.', 700); };
+
+  /* first step: the walk starts by changing channel */
+  guide('#ch-up', 'Start here. <b>Press ▲</b> to change channel and reach the promo channel.', 900);
+})();
 </script>
 </body>
 </html>
