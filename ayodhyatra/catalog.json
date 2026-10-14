@@ -1,0 +1,773 @@
+{
+ "sellerId": "ayodhyatra",
+ "sellerName": "अयोध्यात्रा",
+ "pricing": {
+  "packPaise": 1400,
+  "singlePaise": 600,
+  "gstIncluded": true,
+  "windowHours": 24,
+  "previewSec": 10
+ },
+ "packs": [
+  {
+   "packId": "ayo-01",
+   "title": "The Bloodline That Bent Heaven",
+   "description": "Ram's ancestors — the kings who paid impossible prices for dharma.",
+   "art": {
+    "hi": "ayodhyatra/art/ayo-01-hi.jpg",
+    "en": "ayodhyatra/art/ayo-01-en.jpg"
+   },
+   "episodes": [
+    {
+     "episodeId": "ayo-01-e1",
+     "order": 1,
+     "title": "Nandini cow and Dilip: A Raghuvanshi",
+     "hlsUrl": "https://customer-piyicbti10117uiy.cloudflarestream.com/dcf3bd57af705321636dc513d491fd1e/manifest/video.m3u8",
+     "poster": "https://customer-piyicbti10117uiy.cloudflarestream.com/dcf3bd57af705321636dc513d491fd1e/thumbnails/thumbnail.jpg?time=12s&height=360",
+     "durationSec": 70,
+     "unavailable": false
+    },
+    {
+     "episodeId": "ayo-01-e2",
+     "order": 2,
+     "title": "King Bhagirath: Ram's ancestor",
+     "hlsUrl": "https://customer-piyicbti10117uiy.cloudflarestream.com/0136b9dfc7dd97d7ce7335b6f92f801d/manifest/video.m3u8",
+     "poster": "https://customer-piyicbti10117uiy.cloudflarestream.com/0136b9dfc7dd97d7ce7335b6f92f801d/thumbnails/thumbnail.jpg?time=12s&height=360",
+     "durationSec": 57,
+     "unavailable": false
+    },
+    {
+     "episodeId": "ayo-01-e3",
+     "order": 3,
+     "title": "Ganga delivers Bhagirath's ancestors",
+     "hlsUrl": "https://customer-piyicbti10117uiy.cloudflarestream.com/78d63f75c6fc409e272c5541ecd9e8cc/manifest/video.m3u8",
+     "poster": "https://customer-piyicbti10117uiy.cloudflarestream.com/78d63f75c6fc409e272c5541ecd9e8cc/thumbnails/thumbnail.jpg?time=12s&height=360",
+     "durationSec": 59,
+     "unavailable": false
+    }
+   ]
+  },
+  {
+   "packId": "ayo-02",
+   "title": "The Sage Who Tested Kings: Vishwamitra",
+   "description": "Vishwamitra enters the Ikshvaku story — and is himself tested.",
+   "art": {
+    "hi": "ayodhyatra/art/ayo-02-hi.jpg",
+    "en": "ayodhyatra/art/ayo-02-en.jpg"
+   },
+   "episodes": [
+    {
+     "episodeId": "ayo-02-e1",
+     "order": 1,
+     "title": "Trishanku asks Vishwamitra for a boon",
+     "hlsUrl": "https://customer-piyicbti10117uiy.cloudflarestream.com/2023abeedec0aab2a5861cf9478a150d/manifest/video.m3u8",
+     "poster": "https://customer-piyicbti10117uiy.cloudflarestream.com/2023abeedec0aab2a5861cf9478a150d/thumbnails/thumbnail.jpg?time=12s&height=360",
+     "durationSec": 64,
+     "unavailable": false
+    },
+    {
+     "episodeId": "ayo-02-e2",
+     "order": 2,
+     "title": "Harishchandra: A Raghuvanshi",
+     "hlsUrl": "https://customer-piyicbti10117uiy.cloudflarestream.com/ec9cdb54774217f3aaed73e2206f2c7e/manifest/video.m3u8",
+     "poster": "https://customer-piyicbti10117uiy.cloudflarestream.com/ec9cdb54774217f3aaed73e2206f2c7e/thumbnails/thumbnail.jpg?time=12s&height=360",
+     "durationSec": 62,
+     "unavailable": false
+    },
+    {
+     "episodeId": "ayo-02-e3",
+     "order": 3,
+     "title": "Meneka decevies Vishwamitra",
+     "hlsUrl": "https://customer-piyicbti10117uiy.cloudflarestream.com/ca1a4e01f5d79702ddb2c1775676f52e/manifest/video.m3u8",
+     "poster": "https://customer-piyicbti10117uiy.cloudflarestream.com/ca1a4e01f5d79702ddb2c1775676f52e/thumbnails/thumbnail.jpg?time=12s&height=360",
+     "durationSec": 63,
+     "unavailable": false
+    }
+   ]
+  },
+  {
+   "packId": "ayo-03",
+   "title": "Sita and her birthplace Mithila",
+   "description": "Where Sita was found and where wisdom outranked pride: Mithila",
+   "art": {
+    "hi": "ayodhyatra/art/ayo-03-hi.jpg",
+    "en": "ayodhyatra/art/ayo-03-en.jpg"
+   },
+   "episodes": [
+    {
+     "episodeId": "ayo-03-e1",
+     "order": 1,
+     "title": "Sita's birth in Mithilia",
+     "hlsUrl": "https://customer-piyicbti10117uiy.cloudflarestream.com/3a7e56f5789526c9ed5de67bf0e7d6e9/manifest/video.m3u8",
+     "poster": "https://customer-piyicbti10117uiy.cloudflarestream.com/3a7e56f5789526c9ed5de67bf0e7d6e9/thumbnails/thumbnail.jpg?time=12s&height=360",
+     "durationSec": 59,
+     "unavailable": false
+    },
+    {
+     "episodeId": "ayo-03-e2",
+     "order": 2,
+     "title": "Mithilia's sabha humbled by Ashtavakra",
+     "hlsUrl": "https://customer-piyicbti10117uiy.cloudflarestream.com/75d4b80fc7e8d052d5a3f5fcb592907d/manifest/video.m3u8",
+     "poster": "https://customer-piyicbti10117uiy.cloudflarestream.com/75d4b80fc7e8d052d5a3f5fcb592907d/thumbnails/thumbnail.jpg?time=12s&height=360",
+     "durationSec": 61,
+     "unavailable": false
+    },
+    {
+     "episodeId": "ayo-03-e3",
+     "order": 3,
+     "title": "Savitri: Sita's ideal",
+     "hlsUrl": "https://customer-piyicbti10117uiy.cloudflarestream.com/7c433dc0cec7f639af8dd9cbf3299d4c/manifest/video.m3u8",
+     "poster": "https://customer-piyicbti10117uiy.cloudflarestream.com/7c433dc0cec7f639af8dd9cbf3299d4c/thumbnails/thumbnail.jpg?time=12s&height=360",
+     "durationSec": 63,
+     "unavailable": false
+    }
+   ]
+  },
+  {
+   "packId": "ayo-04",
+   "title": "The Curse, The Bow, The Axe",
+   "description": "Ram's journey to Mithila — one stone freed, one bow broken, one axe raised.",
+   "art": {
+    "hi": "ayodhyatra/art/ayo-04-hi.jpg",
+    "en": "ayodhyatra/art/ayo-04-en.jpg"
+   },
+   "episodes": [
+    {
+     "episodeId": "ayo-04-e1",
+     "order": 1,
+     "title": "Story of Ahilya",
+     "hlsUrl": "https://customer-piyicbti10117uiy.cloudflarestream.com/a79c6d49e18fe1f08586639766db038f/manifest/video.m3u8",
+     "poster": "https://customer-piyicbti10117uiy.cloudflarestream.com/a79c6d49e18fe1f08586639766db038f/thumbnails/thumbnail.jpg?time=12s&height=360",
+     "durationSec": 59,
+     "unavailable": false
+    },
+    {
+     "episodeId": "ayo-04-e2",
+     "order": 2,
+     "title": "Ram breaks Pinaka: Battle with Parshuram",
+     "hlsUrl": "https://customer-piyicbti10117uiy.cloudflarestream.com/1a0e4c9ce590023b82b760d9cf4b2166/manifest/video.m3u8",
+     "poster": "https://customer-piyicbti10117uiy.cloudflarestream.com/1a0e4c9ce590023b82b760d9cf4b2166/thumbnails/thumbnail.jpg?time=12s&height=360",
+     "durationSec": 60,
+     "unavailable": false
+    },
+    {
+     "episodeId": "ayo-04-e3",
+     "order": 3,
+     "title": "Parshuram's Back Story",
+     "hlsUrl": "https://customer-piyicbti10117uiy.cloudflarestream.com/0e1024967cb39a7c27925f093493d1dc/manifest/video.m3u8",
+     "poster": "https://customer-piyicbti10117uiy.cloudflarestream.com/0e1024967cb39a7c27925f093493d1dc/thumbnails/thumbnail.jpg?time=12s&height=360",
+     "durationSec": 64,
+     "unavailable": false
+    }
+   ]
+  },
+  {
+   "packId": "ayo-05",
+   "title": "Dasharath's Karma",
+   "description": "A crime hidden for decades, the curse it carried, and the queen who triggered it.",
+   "art": {
+    "hi": "ayodhyatra/art/ayo-05-hi.jpg",
+    "en": "ayodhyatra/art/ayo-05-en.jpg"
+   },
+   "episodes": [
+    {
+     "episodeId": "ayo-05-e1",
+     "order": 1,
+     "title": "A hidden Crime Committed by Dasarath",
+     "hlsUrl": "https://customer-piyicbti10117uiy.cloudflarestream.com/2af579de3a16eacf05f05d72e6d75634/manifest/video.m3u8",
+     "poster": "https://customer-piyicbti10117uiy.cloudflarestream.com/2af579de3a16eacf05f05d72e6d75634/thumbnails/thumbnail.jpg?time=12s&height=360",
+     "durationSec": 55,
+     "unavailable": false
+    },
+    {
+     "episodeId": "ayo-05-e2",
+     "order": 2,
+     "title": "Dashrath Repents His Deeds",
+     "hlsUrl": "https://customer-piyicbti10117uiy.cloudflarestream.com/6dd7841395537e935e1d837ca9000a3c/manifest/video.m3u8",
+     "poster": "https://customer-piyicbti10117uiy.cloudflarestream.com/6dd7841395537e935e1d837ca9000a3c/thumbnails/thumbnail.jpg?time=12s&height=360",
+     "durationSec": 54,
+     "unavailable": false
+    },
+    {
+     "episodeId": "ayo-05-e3",
+     "order": 3,
+     "title": "Kaikayi Repents her Actions",
+     "hlsUrl": "https://customer-piyicbti10117uiy.cloudflarestream.com/2af579de3a16eacf05f05d72e6d75634/manifest/video.m3u8",
+     "poster": "https://customer-piyicbti10117uiy.cloudflarestream.com/2af579de3a16eacf05f05d72e6d75634/thumbnails/thumbnail.jpg?time=12s&height=360",
+     "durationSec": 55,
+     "unavailable": true
+    }
+   ]
+  },
+  {
+   "packId": "ayo-06",
+   "title": "The Night Ayodhya Broke",
+   "description": "The exile begins — the goodbye, the tribal king who welcomes Ram, the boatman who rows him across.",
+   "art": {
+    "hi": "ayodhyatra/art/ayo-06-hi.jpg",
+    "en": "ayodhyatra/art/ayo-06-en.jpg"
+   },
+   "episodes": [
+    {
+     "episodeId": "ayo-06-e1",
+     "order": 1,
+     "title": "A Tryst Before Separation: Urmila & Laxman",
+     "hlsUrl": "https://customer-piyicbti10117uiy.cloudflarestream.com/d7fefbe77336cba2304d19b8450247b9/manifest/video.m3u8",
+     "poster": "https://customer-piyicbti10117uiy.cloudflarestream.com/d7fefbe77336cba2304d19b8450247b9/thumbnails/thumbnail.jpg?time=12s&height=360",
+     "durationSec": 59,
+     "unavailable": false
+    },
+    {
+     "episodeId": "ayo-06-e2",
+     "order": 2,
+     "title": "Ram in vanvas with Nishad Raj Guha",
+     "hlsUrl": "https://customer-piyicbti10117uiy.cloudflarestream.com/6cae33739cd08360f415126b90552c29/manifest/video.m3u8",
+     "poster": "https://customer-piyicbti10117uiy.cloudflarestream.com/6cae33739cd08360f415126b90552c29/thumbnails/thumbnail.jpg?time=12s&height=360",
+     "durationSec": 58,
+     "unavailable": false
+    },
+    {
+     "episodeId": "ayo-06-e3",
+     "order": 3,
+     "title": "Kevat rows Ram, Sita and Laxman through river",
+     "hlsUrl": "https://customer-piyicbti10117uiy.cloudflarestream.com/4e832cb082cc59994e29f39f262e3879/manifest/video.m3u8",
+     "poster": "https://customer-piyicbti10117uiy.cloudflarestream.com/4e832cb082cc59994e29f39f262e3879/thumbnails/thumbnail.jpg?time=12s&height=360",
+     "durationSec": 53,
+     "unavailable": false
+    }
+   ]
+  },
+  {
+   "packId": "ayo-07",
+   "title": "The Forest Years",
+   "description": "Chitrakoot's reunion, a vulture's last stand, and a tribal woman's berries.",
+   "art": {
+    "hi": "ayodhyatra/art/ayo-07-hi.jpg",
+    "en": "ayodhyatra/art/ayo-07-en.jpg"
+   },
+   "episodes": [
+    {
+     "episodeId": "ayo-07-e1",
+     "order": 1,
+     "title": "Bharat visits Ram in Forest",
+     "hlsUrl": "https://customer-piyicbti10117uiy.cloudflarestream.com/db72838d6325ecf96b0f734338f38a7a/manifest/video.m3u8",
+     "poster": "https://customer-piyicbti10117uiy.cloudflarestream.com/db72838d6325ecf96b0f734338f38a7a/thumbnails/thumbnail.jpg?time=12s&height=360",
+     "durationSec": 61,
+     "unavailable": false
+    },
+    {
+     "episodeId": "ayo-07-e2",
+     "order": 2,
+     "title": "Ravan's battle with Jayatu",
+     "hlsUrl": "https://customer-piyicbti10117uiy.cloudflarestream.com/3e82eb9597f5fb11ad6209ebd6600fcc/manifest/video.m3u8",
+     "poster": "https://customer-piyicbti10117uiy.cloudflarestream.com/3e82eb9597f5fb11ad6209ebd6600fcc/thumbnails/thumbnail.jpg?time=12s&height=360",
+     "durationSec": 50,
+     "unavailable": false
+    },
+    {
+     "episodeId": "ayo-07-e3",
+     "order": 3,
+     "title": "Tale of Shabri and Ram",
+     "hlsUrl": "https://customer-piyicbti10117uiy.cloudflarestream.com/d9ff3c4d2ef635ae2b09cd58cf0c809a/manifest/video.m3u8",
+     "poster": "https://customer-piyicbti10117uiy.cloudflarestream.com/d9ff3c4d2ef635ae2b09cd58cf0c809a/thumbnails/thumbnail.jpg?time=12s&height=360",
+     "durationSec": 53,
+     "unavailable": false
+    }
+   ]
+  },
+  {
+   "packId": "ayo-08",
+   "title": "Hanuman Remembers Who He Is",
+   "description": "From a child who swallowed the sun to the leap that found Sita.",
+   "art": {
+    "hi": "ayodhyatra/art/ayo-08-hi.jpg",
+    "en": "ayodhyatra/art/ayo-08-en.jpg"
+   },
+   "episodes": [
+    {
+     "episodeId": "ayo-08-e1",
+     "order": 1,
+     "title": "Hanuman's attempt to eat Sun",
+     "hlsUrl": "https://customer-piyicbti10117uiy.cloudflarestream.com/8b014e551e74d3b82a2895cfbf8e81e4/manifest/video.m3u8",
+     "poster": "https://customer-piyicbti10117uiy.cloudflarestream.com/8b014e551e74d3b82a2895cfbf8e81e4/thumbnails/thumbnail.jpg?time=12s&height=360",
+     "durationSec": 50,
+     "unavailable": false
+    },
+    {
+     "episodeId": "ayo-08-e2",
+     "order": 2,
+     "title": "Jambavan motivates Hanuman",
+     "hlsUrl": "https://customer-piyicbti10117uiy.cloudflarestream.com/3eb8846cef42977c41db3ddeae504ad3/manifest/video.m3u8",
+     "poster": "https://customer-piyicbti10117uiy.cloudflarestream.com/3eb8846cef42977c41db3ddeae504ad3/thumbnails/thumbnail.jpg?time=12s&height=360",
+     "durationSec": 70,
+     "unavailable": false
+    },
+    {
+     "episodeId": "ayo-08-e3",
+     "order": 3,
+     "title": "Hanuman visits Sita in Ashok Vatika",
+     "hlsUrl": "https://customer-piyicbti10117uiy.cloudflarestream.com/11c750f03c4530d7d072fe5e4f759e67/manifest/video.m3u8",
+     "poster": "https://customer-piyicbti10117uiy.cloudflarestream.com/11c750f03c4530d7d072fe5e4f759e67/thumbnails/thumbnail.jpg?time=12s&height=360",
+     "durationSec": 66,
+     "unavailable": false
+    }
+   ]
+  },
+  {
+   "packId": "ayo-09",
+   "title": "Lanka Before the War",
+   "description": "Ravan at his peak, the brother who walked away, and the bridge that rose.",
+   "art": {
+    "hi": "ayodhyatra/art/ayo-09-hi.jpg",
+    "en": "ayodhyatra/art/ayo-09-en.jpg"
+   },
+   "episodes": [
+    {
+     "episodeId": "ayo-09-e1",
+     "order": 1,
+     "title": "Ravan goes to Kailash",
+     "hlsUrl": "https://customer-piyicbti10117uiy.cloudflarestream.com/19a112628b36ea38299c033b416bd24c/manifest/video.m3u8",
+     "poster": "https://customer-piyicbti10117uiy.cloudflarestream.com/19a112628b36ea38299c033b416bd24c/thumbnails/thumbnail.jpg?time=12s&height=360",
+     "durationSec": 57,
+     "unavailable": false
+    },
+    {
+     "episodeId": "ayo-09-e2",
+     "order": 2,
+     "title": "A Brother Who Chooses Dharma Over Family: Vibhishan",
+     "hlsUrl": "https://customer-piyicbti10117uiy.cloudflarestream.com/d5e606c235ef9098963f514f784753e1/manifest/video.m3u8",
+     "poster": "https://customer-piyicbti10117uiy.cloudflarestream.com/d5e606c235ef9098963f514f784753e1/thumbnails/thumbnail.jpg?time=12s&height=360",
+     "durationSec": 64,
+     "unavailable": false
+    },
+    {
+     "episodeId": "ayo-09-e3",
+     "order": 3,
+     "title": "A Tiny Squirrel's Contribution is Noticed by Ram",
+     "hlsUrl": "https://customer-piyicbti10117uiy.cloudflarestream.com/fdb1c1763167c8d59bc30e3f25592efd/manifest/video.m3u8",
+     "poster": "https://customer-piyicbti10117uiy.cloudflarestream.com/fdb1c1763167c8d59bc30e3f25592efd/thumbnails/thumbnail.jpg?time=12s&height=360",
+     "durationSec": 55,
+     "unavailable": false
+    }
+   ]
+  },
+  {
+   "packId": "ayo-10",
+   "title": "The War and What It Cost",
+   "description": "A mountain carried through the night, a widow's last look, a reunion that ends in fire.",
+   "art": {
+    "hi": "ayodhyatra/art/ayo-10-hi.jpg",
+    "en": "ayodhyatra/art/ayo-10-en.jpg"
+   },
+   "episodes": [
+    {
+     "episodeId": "ayo-10-e1",
+     "order": 1,
+     "title": "Hanuman Brings Sanjeevani",
+     "hlsUrl": "https://customer-piyicbti10117uiy.cloudflarestream.com/6b9152702d64250cb44c918077f257b4/manifest/video.m3u8",
+     "poster": "https://customer-piyicbti10117uiy.cloudflarestream.com/6b9152702d64250cb44c918077f257b4/thumbnails/thumbnail.jpg?time=12s&height=360",
+     "durationSec": 68,
+     "unavailable": false
+    },
+    {
+     "episodeId": "ayo-10-e2",
+     "order": 2,
+     "title": "Mandodari Sees Her Husband One Last Time",
+     "hlsUrl": "https://customer-piyicbti10117uiy.cloudflarestream.com/c10b2c5f5db77aa9009f6e1f16f808fb/manifest/video.m3u8",
+     "poster": "https://customer-piyicbti10117uiy.cloudflarestream.com/c10b2c5f5db77aa9009f6e1f16f808fb/thumbnails/thumbnail.jpg?time=12s&height=360",
+     "durationSec": 55,
+     "unavailable": false
+    },
+    {
+     "episodeId": "ayo-10-e3",
+     "order": 3,
+     "title": "Sita meets Ram after 14 years",
+     "hlsUrl": "https://customer-piyicbti10117uiy.cloudflarestream.com/0a4aee6cebee2c26e1ca7679e7438e47/manifest/video.m3u8",
+     "poster": "https://customer-piyicbti10117uiy.cloudflarestream.com/0a4aee6cebee2c26e1ca7679e7438e47/thumbnails/thumbnail.jpg?time=12s&height=360",
+     "durationSec": 63,
+     "unavailable": false
+    }
+   ]
+  },
+  {
+   "packId": "ayo-11",
+   "title": "Homecoming, and What Followed",
+   "description": "The mother who waited 14 years, the sons who challenged their father, and the earth that opened for Sita.",
+   "art": {
+    "hi": "ayodhyatra/art/ayo-11-hi.jpg",
+    "en": "ayodhyatra/art/ayo-11-en.jpg"
+   },
+   "episodes": [
+    {
+     "episodeId": "ayo-11-e1",
+     "order": 1,
+     "title": "Kaushalya meets Ram after 14 years",
+     "hlsUrl": "https://customer-piyicbti10117uiy.cloudflarestream.com/aeaefc8dc6e9bc7c43bc70cb1434d266/manifest/video.m3u8",
+     "poster": "https://customer-piyicbti10117uiy.cloudflarestream.com/aeaefc8dc6e9bc7c43bc70cb1434d266/thumbnails/thumbnail.jpg?time=12s&height=360",
+     "durationSec": 64,
+     "unavailable": false
+    },
+    {
+     "episodeId": "ayo-11-e2",
+     "order": 2,
+     "title": "A Playful Challenge by Ram's Sons",
+     "hlsUrl": "https://customer-piyicbti10117uiy.cloudflarestream.com/c492a1ffd69de9ca12bad4b18c488601/manifest/video.m3u8",
+     "poster": "https://customer-piyicbti10117uiy.cloudflarestream.com/c492a1ffd69de9ca12bad4b18c488601/thumbnails/thumbnail.jpg?time=12s&height=360",
+     "durationSec": 58,
+     "unavailable": false
+    },
+    {
+     "episodeId": "ayo-11-e3",
+     "order": 3,
+     "title": "Sita goes in earth",
+     "hlsUrl": "https://customer-piyicbti10117uiy.cloudflarestream.com/1f9f12430131f59a98e076d155e66581/manifest/video.m3u8",
+     "poster": "https://customer-piyicbti10117uiy.cloudflarestream.com/1f9f12430131f59a98e076d155e66581/thumbnails/thumbnail.jpg?time=12s&height=360",
+     "durationSec": 49,
+     "unavailable": false
+    }
+   ]
+  },
+  {
+   "packId": "ayo-12",
+   "title": "Ram Leaves — But the Story Doesn't",
+   "description": "Ram's final walk into the Saryu, and the dacoit who made sure we'd still be telling it.",
+   "art": {
+    "hi": "ayodhyatra/art/ayo-12-hi.jpg",
+    "en": "ayodhyatra/art/ayo-12-en.jpg"
+   },
+   "episodes": [
+    {
+     "episodeId": "ayo-12-e1",
+     "order": 1,
+     "title": "Ram is taking jal samadhi",
+     "hlsUrl": "https://customer-piyicbti10117uiy.cloudflarestream.com/efed804bf17a0631d0f02eb5cba3b25d/manifest/video.m3u8",
+     "poster": "https://customer-piyicbti10117uiy.cloudflarestream.com/efed804bf17a0631d0f02eb5cba3b25d/thumbnails/thumbnail.jpg?time=12s&height=360",
+     "durationSec": 60,
+     "unavailable": false
+    },
+    {
+     "episodeId": "ayo-12-e2",
+     "order": 2,
+     "title": "Sinner to Saint: Valmiki",
+     "hlsUrl": "https://customer-piyicbti10117uiy.cloudflarestream.com/f7a2d61a265ef562da61723604c789e0/manifest/video.m3u8",
+     "poster": "https://customer-piyicbti10117uiy.cloudflarestream.com/f7a2d61a265ef562da61723604c789e0/thumbnails/thumbnail.jpg?time=12s&height=360",
+     "durationSec": 65,
+     "unavailable": false
+    },
+    {
+     "episodeId": "ayo-12-e3",
+     "order": 3,
+     "title": "An Unfortunate Incident that made Valmiki a Poet",
+     "hlsUrl": "https://customer-piyicbti10117uiy.cloudflarestream.com/b848ea55d11d803339b792804aeef758/manifest/video.m3u8",
+     "poster": "https://customer-piyicbti10117uiy.cloudflarestream.com/b848ea55d11d803339b792804aeef758/thumbnails/thumbnail.jpg?time=12s&height=360",
+     "durationSec": 66,
+     "unavailable": false
+    }
+   ]
+  },
+  {
+   "packId": "ayo-13",
+   "title": "The Poets Who Saw God",
+   "description": "Three men who went blind to the world and saw Ram, Krishna and the formless.",
+   "art": {
+    "hi": "ayodhyatra/art/ayo-13-hi.jpg",
+    "en": "ayodhyatra/art/ayo-13-en.jpg"
+   },
+   "episodes": [
+    {
+     "episodeId": "ayo-13-e1",
+     "order": 1,
+     "title": "Tulsidas Realises Ram",
+     "hlsUrl": "https://customer-piyicbti10117uiy.cloudflarestream.com/4a7e074ce099d604d744199bcc61702b/manifest/video.m3u8",
+     "poster": "https://customer-piyicbti10117uiy.cloudflarestream.com/4a7e074ce099d604d744199bcc61702b/thumbnails/thumbnail.jpg?time=12s&height=360",
+     "durationSec": 64,
+     "unavailable": false
+    },
+    {
+     "episodeId": "ayo-13-e2",
+     "order": 2,
+     "title": "Sant Surdas",
+     "hlsUrl": "https://customer-piyicbti10117uiy.cloudflarestream.com/023b6be9e1b2c794952834c59d71d06d/manifest/video.m3u8",
+     "poster": "https://customer-piyicbti10117uiy.cloudflarestream.com/023b6be9e1b2c794952834c59d71d06d/thumbnails/thumbnail.jpg?time=12s&height=360",
+     "durationSec": 58,
+     "unavailable": false
+    },
+    {
+     "episodeId": "ayo-13-e3",
+     "order": 3,
+     "title": "Sant Kabir",
+     "hlsUrl": "https://customer-piyicbti10117uiy.cloudflarestream.com/c9cea57594380f901418191847d68a1c/manifest/video.m3u8",
+     "poster": "https://customer-piyicbti10117uiy.cloudflarestream.com/c9cea57594380f901418191847d68a1c/thumbnails/thumbnail.jpg?time=12s&height=360",
+     "durationSec": 62,
+     "unavailable": false
+    }
+   ]
+  },
+  {
+   "packId": "ayo-14",
+   "title": "Story of Vitthal and his Devotees",
+   "description": "A son serving his parents, a God standing on a brick for 28 yugas, and the potter who tested the saints.",
+   "art": {
+    "hi": "ayodhyatra/art/ayo-14-hi.jpg",
+    "en": "ayodhyatra/art/ayo-14-en.jpg"
+   },
+   "episodes": [
+    {
+     "episodeId": "ayo-14-e1",
+     "order": 1,
+     "title": "Pundarik serves his parents",
+     "hlsUrl": "https://customer-piyicbti10117uiy.cloudflarestream.com/2d6b62373892ac824b069dc450a7e6d0/manifest/video.m3u8",
+     "poster": "https://customer-piyicbti10117uiy.cloudflarestream.com/2d6b62373892ac824b069dc450a7e6d0/thumbnails/thumbnail.jpg?time=12s&height=360",
+     "durationSec": 62,
+     "unavailable": false
+    },
+    {
+     "episodeId": "ayo-14-e2",
+     "order": 2,
+     "title": "Sant Gora Kumbhar",
+     "hlsUrl": "https://customer-piyicbti10117uiy.cloudflarestream.com/388381bab6e1c143a80c9d9fadc1a184/manifest/video.m3u8",
+     "poster": "https://customer-piyicbti10117uiy.cloudflarestream.com/388381bab6e1c143a80c9d9fadc1a184/thumbnails/thumbnail.jpg?time=12s&height=360",
+     "durationSec": 63,
+     "unavailable": false
+    },
+    {
+     "episodeId": "ayo-14-e3",
+     "order": 3,
+     "title": "Pandharpur's Namdev",
+     "hlsUrl": "https://customer-piyicbti10117uiy.cloudflarestream.com/4bd4b5500ed2aec88140bc8d901f1e66/manifest/video.m3u8",
+     "poster": "https://customer-piyicbti10117uiy.cloudflarestream.com/4bd4b5500ed2aec88140bc8d901f1e66/thumbnails/thumbnail.jpg?time=12s&height=360",
+     "durationSec": 54,
+     "unavailable": false
+    }
+   ]
+  },
+  {
+   "packId": "ayo-15",
+   "title": "Bhakti Has No Caste",
+   "description": "A grocer, a cobbler and a girl from Villiputur — all let in through the front door.",
+   "art": {
+    "hi": "ayodhyatra/art/ayo-15-hi.jpg",
+    "en": "ayodhyatra/art/ayo-15-en.jpg"
+   },
+   "episodes": [
+    {
+     "episodeId": "ayo-15-e1",
+     "order": 1,
+     "title": "Sant Tukaram",
+     "hlsUrl": "https://customer-piyicbti10117uiy.cloudflarestream.com/78730a8b16fd7efab8d9da9cf0dc2936/manifest/video.m3u8",
+     "poster": "https://customer-piyicbti10117uiy.cloudflarestream.com/78730a8b16fd7efab8d9da9cf0dc2936/thumbnails/thumbnail.jpg?time=12s&height=360",
+     "durationSec": 55,
+     "unavailable": false
+    },
+    {
+     "episodeId": "ayo-15-e2",
+     "order": 2,
+     "title": "Sant Raidas",
+     "hlsUrl": "https://customer-piyicbti10117uiy.cloudflarestream.com/eab81284fb3c70b4178a66908aaf7bc0/manifest/video.m3u8",
+     "poster": "https://customer-piyicbti10117uiy.cloudflarestream.com/eab81284fb3c70b4178a66908aaf7bc0/thumbnails/thumbnail.jpg?time=12s&height=360",
+     "durationSec": 44,
+     "unavailable": false
+    },
+    {
+     "episodeId": "ayo-15-e3",
+     "order": 3,
+     "title": "Villiputur & Ranganath",
+     "hlsUrl": "https://customer-piyicbti10117uiy.cloudflarestream.com/e139243ef4abd31879927f9352a3aa64/manifest/video.m3u8",
+     "poster": "https://customer-piyicbti10117uiy.cloudflarestream.com/e139243ef4abd31879927f9352a3aa64/thumbnails/thumbnail.jpg?time=12s&height=360",
+     "durationSec": 61,
+     "unavailable": false
+    }
+   ]
+  },
+  {
+   "packId": "ayo-16",
+   "title": "Jagannath Puri",
+   "description": "The king who built it, the poet whose song God finished, the dog God fed.",
+   "art": {
+    "hi": "ayodhyatra/art/ayo-16-hi.jpg",
+    "en": "ayodhyatra/art/ayo-16-en.jpg"
+   },
+   "episodes": [
+    {
+     "episodeId": "ayo-16-e1",
+     "order": 1,
+     "title": "Indradyumn: King who built Puri",
+     "hlsUrl": "https://customer-piyicbti10117uiy.cloudflarestream.com/0a55b702d6a7f0f609f2a5568552751b/manifest/video.m3u8",
+     "poster": "https://customer-piyicbti10117uiy.cloudflarestream.com/0a55b702d6a7f0f609f2a5568552751b/thumbnails/thumbnail.jpg?time=12s&height=360",
+     "durationSec": 70,
+     "unavailable": false
+    },
+    {
+     "episodeId": "ayo-16-e2",
+     "order": 2,
+     "title": "Jayadev composes Geet Govind",
+     "hlsUrl": "https://customer-piyicbti10117uiy.cloudflarestream.com/f4e4c415f5833524e6c3fb9fb33d2f6f/manifest/video.m3u8",
+     "poster": "https://customer-piyicbti10117uiy.cloudflarestream.com/f4e4c415f5833524e6c3fb9fb33d2f6f/thumbnails/thumbnail.jpg?time=12s&height=360",
+     "durationSec": 71,
+     "unavailable": false
+    },
+    {
+     "episodeId": "ayo-16-e3",
+     "order": 3,
+     "title": "Chaitanya Mahaprabu's companion: A dog",
+     "hlsUrl": "https://customer-piyicbti10117uiy.cloudflarestream.com/2a652b1595ed80e25bc277792a8ac64a/manifest/video.m3u8",
+     "poster": "https://customer-piyicbti10117uiy.cloudflarestream.com/2a652b1595ed80e25bc277792a8ac64a/thumbnails/thumbnail.jpg?time=12s&height=360",
+     "durationSec": 56,
+     "unavailable": false
+    }
+   ]
+  },
+  {
+   "packId": "ayo-17",
+   "title": "Krishna, the Child, Comes to Gokul",
+   "description": "Born in a prison, targeted by a monstress, and one morning his mother saw the universe in his mouth.",
+   "art": {
+    "hi": "ayodhyatra/art/ayo-17-hi.jpg",
+    "en": "ayodhyatra/art/ayo-17-en.jpg"
+   },
+   "episodes": [
+    {
+     "episodeId": "ayo-17-e1",
+     "order": 1,
+     "title": "Vasudev & Devaki blessed by Vishnu",
+     "hlsUrl": "https://customer-piyicbti10117uiy.cloudflarestream.com/b03ed7ef294f396e797f6c2975043ba2/manifest/video.m3u8",
+     "poster": "https://customer-piyicbti10117uiy.cloudflarestream.com/b03ed7ef294f396e797f6c2975043ba2/thumbnails/thumbnail.jpg?time=12s&height=360",
+     "durationSec": 54,
+     "unavailable": false
+    },
+    {
+     "episodeId": "ayo-17-e2",
+     "order": 2,
+     "title": "Putna enters Gokul",
+     "hlsUrl": "https://customer-piyicbti10117uiy.cloudflarestream.com/0a8331e7f2ec80d102c195255671ef53/manifest/video.m3u8",
+     "poster": "https://customer-piyicbti10117uiy.cloudflarestream.com/0a8331e7f2ec80d102c195255671ef53/thumbnails/thumbnail.jpg?time=12s&height=360",
+     "durationSec": 55,
+     "unavailable": false
+    },
+    {
+     "episodeId": "ayo-17-e3",
+     "order": 3,
+     "title": "Yashoda discovers the universe in Krishna's mouth",
+     "hlsUrl": "https://customer-piyicbti10117uiy.cloudflarestream.com/fab7e7ca46e62a393b3b2a95234f268d/manifest/video.m3u8",
+     "poster": "https://customer-piyicbti10117uiy.cloudflarestream.com/fab7e7ca46e62a393b3b2a95234f268d/thumbnails/thumbnail.jpg?time=12s&height=360",
+     "durationSec": 52,
+     "unavailable": false
+    }
+   ]
+  },
+  {
+   "packId": "ayo-18",
+   "title": "Krishna's Pastimes in Vrindavan",
+   "description": "Three times Vrindavan was in danger, and each time the boy they scolded stood between them and it.",
+   "art": {
+    "hi": "ayodhyatra/art/ayo-18-hi.jpg",
+    "en": "ayodhyatra/art/ayo-18-en.jpg"
+   },
+   "episodes": [
+    {
+     "episodeId": "ayo-18-e1",
+     "order": 1,
+     "title": "Krishan frees 2 Yakshas",
+     "hlsUrl": "https://customer-piyicbti10117uiy.cloudflarestream.com/6df98bf58d91db20ea470d0f2d1680d6/manifest/video.m3u8",
+     "poster": "https://customer-piyicbti10117uiy.cloudflarestream.com/6df98bf58d91db20ea470d0f2d1680d6/thumbnails/thumbnail.jpg?time=12s&height=360",
+     "durationSec": 63,
+     "unavailable": false
+    },
+    {
+     "episodeId": "ayo-18-e2",
+     "order": 2,
+     "title": "Krishna dances on Kaliya",
+     "hlsUrl": "https://customer-piyicbti10117uiy.cloudflarestream.com/6e44471678c4f30a646b6f63a6abec63/manifest/video.m3u8",
+     "poster": "https://customer-piyicbti10117uiy.cloudflarestream.com/6e44471678c4f30a646b6f63a6abec63/thumbnails/thumbnail.jpg?time=12s&height=360",
+     "durationSec": 56,
+     "unavailable": false
+    },
+    {
+     "episodeId": "ayo-18-e3",
+     "order": 3,
+     "title": "Indra's ego is humbled by Krishna",
+     "hlsUrl": "https://customer-piyicbti10117uiy.cloudflarestream.com/7cdd9ed827890ed6d008bfbaad68f2ee/manifest/video.m3u8",
+     "poster": "https://customer-piyicbti10117uiy.cloudflarestream.com/7cdd9ed827890ed6d008bfbaad68f2ee/thumbnails/thumbnail.jpg?time=12s&height=360",
+     "durationSec": 169,
+     "unavailable": false
+    }
+   ]
+  },
+  {
+   "packId": "ayo-19",
+   "title": "Ladies Transformed by Krishna: Vrindavan to Mathura",
+   "description": "Play, then longing, then a chariot to Mathura — grace given to a stranger while Vrindavan was still singing.",
+   "art": {
+    "hi": "ayodhyatra/art/ayo-19-hi.jpg",
+    "en": "ayodhyatra/art/ayo-19-en.jpg"
+   },
+   "episodes": [
+    {
+     "episodeId": "ayo-19-e1",
+     "order": 1,
+     "title": "Radha steals Krishna's flute",
+     "hlsUrl": "https://customer-piyicbti10117uiy.cloudflarestream.com/42f38c7823f428aa6c723782f2b65ba3/manifest/video.m3u8",
+     "poster": "https://customer-piyicbti10117uiy.cloudflarestream.com/42f38c7823f428aa6c723782f2b65ba3/thumbnails/thumbnail.jpg?time=12s&height=360",
+     "durationSec": 67,
+     "unavailable": false
+    },
+    {
+     "episodeId": "ayo-19-e2",
+     "order": 2,
+     "title": "Gopi's sing Gopi Geet to call Krishna",
+     "hlsUrl": "https://customer-piyicbti10117uiy.cloudflarestream.com/489c1b860001db76208e2fae9e72ef77/manifest/video.m3u8",
+     "poster": "https://customer-piyicbti10117uiy.cloudflarestream.com/489c1b860001db76208e2fae9e72ef77/thumbnails/thumbnail.jpg?time=12s&height=360",
+     "durationSec": 54,
+     "unavailable": false
+    },
+    {
+     "episodeId": "ayo-19-e3",
+     "order": 3,
+     "title": "Kubja in Mathura",
+     "hlsUrl": "https://customer-piyicbti10117uiy.cloudflarestream.com/05a0780f62f368a9ca7954a12780a009/manifest/video.m3u8",
+     "poster": "https://customer-piyicbti10117uiy.cloudflarestream.com/05a0780f62f368a9ca7954a12780a009/thumbnails/thumbnail.jpg?time=12s&height=360",
+     "durationSec": 62,
+     "unavailable": false
+    }
+   ]
+  },
+  {
+   "packId": "ayo-20",
+   "title": "Krishna: The Ruler of Dwarka",
+   "description": "Why he ran from a battlefield, why he built a city in the sea, and the man who never forgave him for the woman he took.",
+   "art": {
+    "hi": "ayodhyatra/art/ayo-20-hi.jpg",
+    "en": "ayodhyatra/art/ayo-20-en.jpg"
+   },
+   "episodes": [
+    {
+     "episodeId": "ayo-20-e1",
+     "order": 1,
+     "title": "Kalyavan vs Krishna: A faceoff leading to construction of Dwarka",
+     "hlsUrl": "https://customer-piyicbti10117uiy.cloudflarestream.com/3e7b6bfe1e0aee66ed134f8631f22fca/manifest/video.m3u8",
+     "poster": "https://customer-piyicbti10117uiy.cloudflarestream.com/3e7b6bfe1e0aee66ed134f8631f22fca/thumbnails/thumbnail.jpg?time=12s&height=360",
+     "durationSec": 57,
+     "unavailable": false
+    },
+    {
+     "episodeId": "ayo-20-e2",
+     "order": 2,
+     "title": "Rukimini requests Dwarakadhish to marry her",
+     "hlsUrl": "https://customer-piyicbti10117uiy.cloudflarestream.com/5f580130ae30a389c317eabf28aff150/manifest/video.m3u8",
+     "poster": "https://customer-piyicbti10117uiy.cloudflarestream.com/5f580130ae30a389c317eabf28aff150/thumbnails/thumbnail.jpg?time=12s&height=360",
+     "durationSec": 53,
+     "unavailable": false
+    },
+    {
+     "episodeId": "ayo-20-e3",
+     "order": 3,
+     "title": "Krishna curses Shishupala",
+     "hlsUrl": "https://customer-piyicbti10117uiy.cloudflarestream.com/ccd4eb660d82fbeb36f456230239f2cd/manifest/video.m3u8",
+     "poster": "https://customer-piyicbti10117uiy.cloudflarestream.com/ccd4eb660d82fbeb36f456230239f2cd/thumbnails/thumbnail.jpg?time=12s&height=360",
+     "durationSec": 65,
+     "unavailable": false
+    }
+   ]
+  }
+ ]
+}

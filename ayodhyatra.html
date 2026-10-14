@@ -1,0 +1,882 @@
+<!doctype html>
+<html lang="hi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,maximum-scale=1">
+<meta name="theme-color" content="#120D1A">
+<link rel="icon" href="data:,">
+<title>Wiom TV — अयोध्यात्रा पैक (डेमो)</title>
+<script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.7"></script>
+<style>
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{margin:0;padding:0;background:#0B0812;height:100%;overflow:hidden}
+  body{font-family:"Noto Sans","Noto Sans Devanagari","Nirmala UI",system-ui,-apple-system,sans-serif;
+    color:#FAF9FC;line-height:1.5;overscroll-behavior:none}
+  #app{position:fixed;inset:0;display:flex;flex-direction:column;background:#120D1A;overflow:hidden}
+  button{font-family:inherit;border:0;background:none;color:inherit;cursor:pointer}
+  .hide{display:none!important}
+
+  /* ---------- HOME: player + store ---------- */
+  #player-wrap{position:relative;width:100%;aspect-ratio:16/9;background:#000;flex:0 0 auto}
+  #tv{width:100%;height:100%;object-fit:cover;display:block;background:#000 center/cover no-repeat}
+  #tv-fallback{position:absolute;inset:0;background-size:cover;background-position:center}
+  .lv{position:absolute;top:calc(9px + env(safe-area-inset-top,0px));left:10px;display:flex;align-items:center;gap:5px;
+    background:rgba(0,0,0,.62);border-radius:999px;padding:4px 10px;font-size:9.5px;font-weight:800;letter-spacing:.09em}
+  .lv i{width:5px;height:5px;border-radius:50%;background:#E01E00;display:block;animation:blink 2s infinite}
+  @keyframes blink{50%{opacity:.35}}
+  #tv-sound{position:absolute;top:calc(8px + env(safe-area-inset-top,0px));right:10px;width:34px;height:34px;
+    border-radius:50%;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;font-size:15px}
+  .redline{position:absolute;left:0;right:0;bottom:0;height:2.5px;background:#E01E00}
+
+  #chbar{display:flex;align-items:center;gap:9px;padding:11px 14px;border-bottom:1px solid rgba(255,255,255,.07);flex:0 0 auto}
+  #chbar .cn{font-size:12px;font-weight:800;background:rgba(255,255,255,.1);border-radius:6px;padding:3px 8px}
+  #chbar .nm{flex:1;font-size:13.5px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  #chbar .all{font-size:12px;font-weight:800;color:#FFB2E4}
+
+  #store{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;
+    padding:14px 14px calc(88px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:16px;
+    background:linear-gradient(180deg,rgba(217,0,141,.07),transparent 30%)}
+  .sech{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:8px}
+  .sech .t{font-size:10.5px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#6E6579}
+  .sech .t.on{color:#3DC98A}
+  .sech .hint{font-size:10px;color:#4B4358;font-weight:600}
+
+  .runcard{display:flex;align-items:center;gap:11px;border-radius:14px;padding:12px;
+    border:1px solid rgba(255,178,228,.32);background:linear-gradient(135deg,rgba(217,0,141,.22),rgba(109,23,206,.14))}
+  .runcard.amb{border-color:rgba(255,128,0,.5);background:linear-gradient(135deg,rgba(255,128,0,.2),rgba(217,0,141,.1))}
+  .runcard img{width:34px;height:34px;border-radius:9px;flex:0 0 auto}
+  .runcard .ri{flex:1;min-width:0}
+  .runcard .rn{font-size:12.5px;font-weight:800}
+  .runcard .rt{font-size:16px;font-weight:900;color:#FFB2E4;margin-top:1px;font-variant-numeric:tabular-nums}
+  .runcard.amb .rt{color:#FFB067}
+  .mini{height:4px;border-radius:2px;background:rgba(255,255,255,.16);margin-top:6px;overflow:hidden}
+  .mini i{display:block;height:100%;background:linear-gradient(90deg,#D9008D,#FFB2E4);border-radius:2px;transition:width .4s}
+  .mini i.amb{background:linear-gradient(90deg,#FF8000,#FFC076)}
+  .runcard .open{background:#FAF9FC;color:#161021;border-radius:10px;padding:11px 14px;font-size:12.5px;font-weight:800;flex:0 0 auto}
+
+  .appblk{display:flex;flex-direction:column;gap:9px;margin-bottom:18px}
+  .apphd{display:flex;align-items:center;gap:10px}
+  .apphd img{width:34px;height:34px;border-radius:9px;flex:0 0 auto;border:1px solid rgba(255,255,255,.1)}
+  .apphd .ai{flex:1;min-width:0}
+  .apphd .an{font-size:13.5px;font-weight:800}
+  .apphd .ad{font-size:10.5px;color:#A7A1B2;margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .buy{background:#D9008D;border-radius:11px;padding:8px 13px;text-align:center;flex:0 0 auto;min-width:66px}
+  .buy .pr{font-size:15px;font-weight:900;line-height:1.05}
+  .buy .du{font-size:9.5px;font-weight:700;color:rgba(255,255,255,.85)}
+  .prow{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px;margin:0 -14px;padding-left:14px;padding-right:14px}
+  .prow::-webkit-scrollbar{display:none}
+  .prow .pi{width:78px;flex:0 0 auto}
+  .prow .pi img{width:78px;height:117px;border-radius:9px;display:block;object-fit:cover;border:1px solid rgba(255,255,255,.09)}
+  .prow .pi .pt{font-size:10px;color:#C9C3D4;margin-top:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:600}
+
+  .pastrow{display:flex;align-items:center;gap:10px;padding:11px;border-radius:12px;background:rgba(255,255,255,.045)}
+  .pastrow img{width:28px;height:28px;border-radius:8px;opacity:.6;flex:0 0 auto}
+  .pastrow .pi2{flex:1;min-width:0}
+  .pastrow .pn{font-size:12px;font-weight:700;color:#A7A1B2}
+  .pastrow .pd{font-size:10px;color:#665E75;margin-top:1px}
+  .pastrow .again{background:rgba(255,255,255,.1);border-radius:9px;padding:9px 12px;font-size:11px;font-weight:800;flex:0 0 auto}
+
+  /* ---------- PROMO ---------- */
+  #promo{position:fixed;inset:0;background:#000;z-index:40;display:flex;flex-direction:column}
+  #pv{width:100%;height:100%;object-fit:contain;background:#000;transition:filter .45s,transform .45s}
+  #pv.frozen{filter:blur(6px) brightness(.5);transform:scale(1.04)}
+  #chip{position:absolute;top:calc(12px + env(safe-area-inset-top,0px));left:12px;display:flex;align-items:center;gap:8px;
+    background:rgba(22,16,33,.75);backdrop-filter:blur(8px);border:1px solid rgba(255,178,228,.24);
+    border-radius:999px;padding:7px 13px 7px 10px;font-size:12px;font-weight:700;max-width:60%}
+  #chip .dot{width:6px;height:6px;border-radius:50%;background:#D9008D;flex:0 0 auto}
+  #chip .nm{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  #chip .ct{font-size:9px;font-weight:800;letter-spacing:.08em;color:#FFB2E4;border-left:1px solid rgba(255,178,228,.3);padding-left:8px;flex:0 0 auto}
+  #chip .ct.unl{color:#7BE8B0}
+  #pill{position:absolute;top:calc(12px + env(safe-area-inset-top,0px));right:12px;display:flex;align-items:center;gap:6px;
+    background:rgba(22,16,33,.75);backdrop-filter:blur(8px);border:1px solid rgba(255,178,228,.3);
+    border-radius:999px;padding:7px 12px;font-size:11.5px;font-weight:800;color:#FFB2E4;font-variant-numeric:tabular-nums}
+  #pill.amb{border-color:rgba(255,128,0,.5);color:#FFB067}
+  #pill.buy2{color:#FAF9FC;border-color:rgba(255,255,255,.2)}
+  #pprog{position:absolute;left:0;right:0;bottom:0;height:3px;background:rgba(255,255,255,.16)}
+  #pprog i{display:block;height:100%;width:0;background:linear-gradient(90deg,#D9008D,#FFB2E4)}
+  #pback{position:absolute;top:calc(56px + env(safe-area-inset-top,0px));left:12px;width:38px;height:38px;border-radius:50%;
+    background:rgba(22,16,33,.7);border:1px solid rgba(255,255,255,.14);display:flex;align-items:center;justify-content:center;font-size:17px}
+  #punmute{position:absolute;left:50%;bottom:34px;transform:translateX(-50%);display:flex;align-items:center;gap:8px;
+    background:rgba(217,0,141,.95);border-radius:999px;padding:12px 20px;font-size:13.5px;font-weight:700;
+    box-shadow:0 6px 22px rgba(0,0,0,.45)}
+
+  /* ---------- SHEET ---------- */
+  .sheet{position:fixed;left:0;right:0;bottom:0;z-index:60;background:#1D1526;border-top:1px solid rgba(255,178,228,.2);
+    border-radius:22px 22px 0 0;padding:18px 18px calc(80px + env(safe-area-inset-bottom,0px));
+    transform:translateY(101%);transition:transform .42s cubic-bezier(.16,1,.3,1);box-shadow:0 -18px 50px rgba(0,0,0,.6)}
+  .sheet.up{transform:translateY(0)}
+  .grab{width:36px;height:4px;border-radius:2px;background:rgba(255,255,255,.2);margin:0 auto 14px}
+  .sheet h3{margin:0 0 4px;font-size:20px;font-weight:800}
+  .sheet .sub{margin:0 0 14px;font-size:13px;color:#A7A1B2}
+  .sheet .sub b{color:#FAF9FC}
+  .offer{display:flex;align-items:center;gap:12px;background:linear-gradient(135deg,rgba(217,0,141,.18),rgba(109,23,206,.13));
+    border:1px solid rgba(255,178,228,.28);border-radius:14px;padding:13px 15px;margin-bottom:12px}
+  .offer .pr{font-size:30px;font-weight:900;color:#FFB2E4;line-height:1}
+  .offer .pr small{font-size:15px;vertical-align:top}
+  .offer .wt{font-size:14px;font-weight:700;line-height:1.3}
+  .offer .wt span{display:block;font-size:11.5px;font-weight:600;color:#A7A1B2;margin-top:3px}
+  .dest{display:flex;align-items:center;gap:9px;background:rgba(109,23,206,.16);border:1px solid rgba(180,140,255,.3);
+    border-radius:11px;padding:10px 12px;margin-bottom:12px;font-size:11.5px;color:#D9C6FF;line-height:1.4}
+  .dest img{width:22px;height:22px;border-radius:6px;flex:0 0 auto}
+  .paybtn{display:flex;align-items:center;justify-content:center;gap:9px;width:100%;background:#D9008D;
+    border-radius:13px;padding:17px;font-size:16px;font-weight:800}
+  .paybtn.busy{background:#443152;color:#A7A1B2;pointer-events:none}
+  .paybtn .upi{font-size:10px;font-weight:800;letter-spacing:.1em;background:rgba(255,255,255,.22);padding:3px 7px;border-radius:5px}
+  .paybtn.busy .upi{display:none}
+  .spin{width:16px;height:16px;border:2px solid rgba(255,255,255,.28);border-top-color:#FFB2E4;border-radius:50%;
+    animation:sp .7s linear infinite;display:inline-block}
+  @keyframes sp{to{transform:rotate(360deg)}}
+  .skip{display:block;width:100%;margin-top:8px;color:#A7A1B2;font-size:13.5px;font-weight:600;padding:13px}
+  .trust{display:flex;align-items:center;justify-content:center;gap:6px;margin-top:6px;font-size:11px;color:#665E75}
+  .trust b{color:#FFB2E4;text-decoration:underline;font-weight:700}
+  #scrim{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:55;opacity:0;pointer-events:none;transition:opacity .3s}
+  #scrim.on{opacity:1;pointer-events:auto}
+
+  /* ---------- FULLSCREEN PANELS ---------- */
+  .panel{position:fixed;inset:0;z-index:70;background:#120D1A;display:flex;flex-direction:column;
+    padding:calc(18px + env(safe-area-inset-top,0px)) 18px calc(80px + env(safe-area-inset-bottom,0px));
+    overflow-y:auto;animation:fade .25s}
+  @keyframes fade{from{opacity:0}to{opacity:1}}
+  .panel h2{margin:0 0 14px;font-size:19px;font-weight:800;display:flex;justify-content:space-between;align-items:center}
+  .panel h2 button{font-size:22px;color:#A7A1B2;padding:4px 8px}
+  .qa{border-bottom:1px solid rgba(255,255,255,.08);padding:11px 0}
+  .qa .q{font-size:13.5px;font-weight:700;color:#FFB2E4;margin-bottom:3px}
+  .qa .a{font-size:12.5px;color:#C9C3D4;line-height:1.5}
+  .qa .a b{color:#7BE8B0}
+  .wa{margin-top:16px;background:rgba(0,128,67,.18);border:1px solid rgba(61,201,138,.35);border-radius:12px;
+    padding:13px;font-size:12.5px;color:#7BE8B0;font-weight:700;line-height:1.45}
+
+  /* success / handoff */
+  .center{position:fixed;inset:0;z-index:80;display:flex;flex-direction:column;align-items:center;justify-content:center;
+    gap:14px;background:rgba(18,13,26,.96);backdrop-filter:blur(10px);text-align:center;animation:fade .25s;
+    padding:28px 28px calc(88px + env(safe-area-inset-bottom,0px))}
+  .tick{width:74px;height:74px;border-radius:50%;background:#008043;display:flex;align-items:center;justify-content:center;
+    font-size:38px;animation:pop .45s cubic-bezier(.2,1.4,.4,1)}
+  @keyframes pop{from{transform:scale(.4);opacity:0}}
+  .center .t{font-size:20px;font-weight:800}
+  .center .s{font-size:13.5px;color:#A7A1B2;line-height:1.5;max-width:280px}
+  .center .cta{margin-top:8px;background:#D9008D;border-radius:13px;padding:16px 26px;font-size:15px;font-weight:800;
+    display:flex;align-items:center;gap:10px}
+  .center .cta img{width:22px;height:22px;border-radius:6px}
+  .center .alt{color:#A7A1B2;font-size:12.5px;padding:12px;font-weight:600}
+
+  /* mock play store */
+  #ps{position:fixed;inset:0;z-index:85;background:#fff;color:#202124;display:flex;flex-direction:column;
+    padding:calc(14px + env(safe-area-inset-top,0px)) 16px calc(78px + env(safe-area-inset-bottom,0px));gap:14px;animation:fade .25s}
+  #ps .bar{height:40px;border-radius:20px;background:#F1F3F4;display:flex;align-items:center;padding:0 14px;font-size:13px;color:#5F6368;gap:8px}
+  #ps .app{display:flex;gap:14px;align-items:center}
+  #ps .app img{width:64px;height:64px;border-radius:14px}
+  #ps .nm{font-size:19px;font-weight:700}
+  #ps .dev{font-size:13px;color:#01875f;font-weight:600}
+  #ps .meta{display:flex;justify-content:space-around;text-align:center;font-size:11px;color:#5F6368;
+    border-top:1px solid #E8EAED;border-bottom:1px solid #E8EAED;padding:12px 0}
+  #ps .meta b{display:block;font-size:14px;color:#202124}
+  #ps .install{background:#01875f;color:#fff;border-radius:9px;padding:14px;text-align:center;font-size:15px;font-weight:700}
+  #ps .shots{display:flex;gap:9px;overflow-x:auto;scrollbar-width:none}
+  #ps .shots img{height:150px;border-radius:9px;flex:0 0 auto}
+  #ps .note{font-size:11px;color:#5F6368;line-height:1.5;margin-top:auto}
+
+  /* mock dashverse app */
+  #dv{position:fixed;inset:0;z-index:86;background:#0B0714;display:flex;flex-direction:column;animation:fade .3s}
+  #dv .top{display:flex;align-items:center;gap:9px;padding:calc(13px + env(safe-area-inset-top,0px)) 16px 13px;
+    border-bottom:1px solid rgba(255,255,255,.07)}
+  #dv .top img{width:26px;height:26px;border-radius:7px}
+  #dv .brand{font-size:15px;font-weight:800}
+  #dv .toast{margin:13px 16px 0;background:rgba(0,128,67,.2);border:1px solid rgba(61,201,138,.4);border-radius:12px;
+    padding:12px 14px;font-size:12.5px;color:#7BE8B0;font-weight:700;line-height:1.45;display:flex;gap:9px;
+    animation:slidein .5s cubic-bezier(.16,1,.3,1)}
+  @keyframes slidein{from{transform:translateY(-14px);opacity:0}}
+  #dv .stage{flex:1;margin:13px 16px;border-radius:14px;overflow:hidden;position:relative;background:#000}
+  #dv .stage video{width:100%;height:100%;object-fit:contain;background:#000}
+  #dv .ov{position:absolute;left:0;right:0;bottom:0;padding:14px;background:linear-gradient(transparent,rgba(0,0,0,.9))}
+  #dv .ep{font-size:14px;font-weight:800}
+  #dv .sb{font-size:11.5px;color:#C9C3D4;margin-top:2px}
+  #dv .bulk{margin:0 16px calc(78px + env(safe-area-inset-bottom,0px));background:rgba(109,23,206,.18);
+    border:1px solid rgba(180,140,255,.3);border-radius:12px;padding:12px 14px;font-size:11.5px;color:#D9C6FF;line-height:1.45}
+  #dv .back{margin-left:auto;font-size:12px;font-weight:800;color:#FFB2E4;padding:8px}
+
+  /* ---------- mode: live channel (fullscreen) vs store (youtube layout) ---------- */
+  #app.mode-live #player-wrap{position:fixed;inset:0;width:100%;height:100%;aspect-ratio:auto}
+  #app.mode-live #chbar,#app.mode-live #store{display:none}
+  #app.mode-store #banner,#app.mode-store #remote,#app.mode-store #coach{display:none}
+
+  #banner{position:absolute;left:12px;bottom:calc(78px + env(safe-area-inset-bottom,0px));z-index:3;
+    display:flex;align-items:center;gap:8px;background:rgba(0,0,0,.55);border-radius:11px;padding:7px 10px 7px 8px}
+  #banner .cn{font-weight:800;background:rgba(255,255,255,.15);border-radius:6px;padding:2px 8px;font-size:12px}
+  #banner .nm{font-size:13px;font-weight:700}
+  #banner .hb{width:26px;height:26px;border-radius:50%;background:rgba(255,255,255,.12);color:#FFB2E4;
+    display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;margin-left:2px}
+
+  /* channel remote (right rail) */
+  #remote{position:absolute;right:12px;top:50%;transform:translateY(-50%);z-index:4;
+    display:flex;flex-direction:column;align-items:center;background:rgba(0,0,0,.5);
+    border:1px solid rgba(255,255,255,.16);border-radius:999px;overflow:hidden}
+  #remote button{width:48px;height:46px;font-size:19px;color:#fff;display:flex;align-items:center;justify-content:center}
+  #remote button:active{background:rgba(217,0,141,.35)}
+  #remote .lbl{font-size:9px;font-weight:800;color:#FFB2E4;letter-spacing:.08em;padding:3px 0}
+
+  #coach{position:absolute;right:72px;top:50%;transform:translateY(-50%);z-index:5;max-width:186px;
+    background:#D9008D;color:#fff;border-radius:13px;padding:11px 13px;font-size:12.5px;font-weight:700;line-height:1.35;
+    box-shadow:0 10px 28px rgba(0,0,0,.45);animation:bob 1.7s ease-in-out infinite}
+  #coach::after{content:"";position:absolute;right:-7px;top:50%;transform:translateY(-50%);
+    border:7px solid transparent;border-left-color:#D9008D}
+  @keyframes bob{50%{transform:translateY(-50%) translateX(-6px)}}
+
+  /* toast coach (store reveal etc.) */
+  #toast{position:fixed;left:14px;right:14px;bottom:calc(80px + env(safe-area-inset-bottom,0px));z-index:96;
+    background:#D9008D;color:#fff;border-radius:13px;padding:13px 15px;font-size:13px;font-weight:700;line-height:1.4;
+    box-shadow:0 12px 34px rgba(0,0,0,.5);text-align:center;transform:translateY(20px);opacity:0;
+    transition:transform .35s cubic-bezier(.16,1,.3,1),opacity .35s;pointer-events:none}
+  #toast.on{transform:translateY(0);opacity:1}
+
+  /* CRT static beat between channels */
+  #crt{position:fixed;inset:0;z-index:50;background:#0a0a0a;display:flex;flex-direction:column;
+    align-items:center;justify-content:center;gap:8px}
+  #crt .noise{position:absolute;inset:0;opacity:.5;mix-blend-mode:screen;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+    background-size:170px 170px;animation:snow .16s steps(3) infinite}
+  @keyframes snow{0%{background-position:0 0}33%{background-position:40px -30px}66%{background-position:-30px 50px}100%{background-position:20px 10px}}
+  #crt .scan{position:absolute;left:0;right:0;height:32%;background:linear-gradient(transparent,rgba(255,255,255,.06),transparent);
+    animation:sweep 1.4s linear infinite}
+  @keyframes sweep{0%{top:-32%}100%{top:100%}}
+  #crt .num{position:relative;font-size:60px;font-weight:900;color:#FFB2E4;text-shadow:0 0 18px rgba(217,0,141,.6);animation:flick .1s steps(1) 4}
+  @keyframes flick{50%{opacity:.55}}
+  #crt .nm{position:relative;font-size:14px;font-weight:700;color:#FAF9FC;letter-spacing:1px}
+  #crt.hide{display:none}
+
+  /* Dashverse -> back to Wiom popup */
+  #dvpop{position:absolute;left:14px;right:14px;bottom:calc(84px + env(safe-area-inset-bottom,0px));z-index:6;
+    background:#1D1526;border:1px solid rgba(255,178,228,.3);border-radius:16px;padding:14px 15px;
+    display:flex;align-items:center;gap:12px;box-shadow:0 14px 40px rgba(0,0,0,.6);animation:slideup .42s cubic-bezier(.16,1,.3,1)}
+  @keyframes slideup{from{transform:translateY(28px);opacity:0}}
+  #dvpop .di{flex:1;min-width:0}
+  #dvpop .dt{font-size:13px;font-weight:800}
+  #dvpop .dd{font-size:11px;color:#A7A1B2;margin-top:2px;line-height:1.35}
+  #dvpop .dgo{background:#D9008D;border-radius:11px;padding:11px 14px;font-size:12.5px;font-weight:800;white-space:nowrap;flex:0 0 auto}
+
+  /* ---------- demo bar ---------- */
+  #demo{position:fixed;left:0;right:0;bottom:0;z-index:95;display:flex;gap:7px;padding:9px 10px calc(9px + env(safe-area-inset-bottom,0px));
+    background:linear-gradient(transparent,rgba(11,8,18,.94) 34%);pointer-events:none}
+  #demo button{pointer-events:auto;flex:1;border:1px dashed rgba(255,178,228,.55);background:rgba(22,16,33,.88);
+    color:#FFB2E4;border-radius:11px;padding:11px 5px;font-size:10.5px;font-weight:700;line-height:1.3}
+  #demo button:active{background:rgba(217,0,141,.28)}
+  /* help lives in the channel bar so it never fights the player's own controls */
+  #helpbtn{width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.09);
+    display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:#FFB2E4;flex:0 0 auto}
+  @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+  /* ══ UI GUIDE (added) — demo scaffolding. Deliberately NOT a Wiom product
+     colour, so it can never be mistaken for real UI. ══ */
+  #uig-spot{position:fixed;z-index:9997;border-radius:12px;pointer-events:none;
+    box-shadow:0 0 0 3px #B98CFF,0 0 0 9999px rgba(6,4,11,.58);
+    transition:all .28s cubic-bezier(.2,.8,.3,1);animation:uigHalo 1.6s ease-in-out infinite}
+  @keyframes uigHalo{50%{box-shadow:0 0 0 6px rgba(185,140,255,.55),0 0 0 9999px rgba(6,4,11,.58)}}
+  #uig{position:fixed;z-index:9998;max-width:250px;background:#241437;border:1.5px solid #B98CFF;
+    border-radius:12px;padding:11px 13px;box-shadow:0 14px 38px rgba(0,0,0,.72);
+    transition:all .28s cubic-bezier(.2,.8,.3,1)}
+  #uig .lb{display:flex;align-items:center;gap:5px;font-size:9px;font-weight:900;letter-spacing:.14em;
+    text-transform:uppercase;color:#B98CFF;margin-bottom:4px}
+  #uig .lb::before{content:"\25C6"}
+  #uig .tx{font-size:12.5px;font-weight:700;line-height:1.4;color:#FAF9FC}
+  #uig .tx b{color:#B98CFF}
+  #uig-btn{position:fixed;z-index:9999;top:calc(9px + env(safe-area-inset-top,0px));left:50%;
+    transform:translateX(-50%);background:#6D17CE;color:#fff;border-radius:999px;padding:5px 12px;
+    font-size:10px;font-weight:900;letter-spacing:.1em;text-transform:uppercase;
+    box-shadow:0 4px 14px rgba(0,0,0,.5);border:1px solid #B98CFF}
+  #uig-btn.off{background:rgba(10,6,18,.7);border-color:rgba(255,255,255,.25);color:#A7A1B2}
+  body.uig-off #uig,body.uig-off #uig-spot{display:none!important}
+</style>
+<style>
+  /* ══ Ayodhyatra additions — same wiom.tv tokens as store.html ══ */
+  #pv{object-fit:contain}
+  #free{position:absolute;left:50%;bottom:calc(92px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);display:flex;align-items:center;gap:8px;
+    background:rgba(22,16,33,.8);backdrop-filter:blur(8px);border:1px solid rgba(255,178,228,.3);border-radius:999px;
+    padding:8px 14px;font-size:12.5px;font-weight:800;color:#FFB2E4;font-variant-numeric:tabular-nums}
+  #free .ring{width:18px;height:18px;border-radius:50%;background:conic-gradient(#D9008D var(--p,0%),rgba(255,255,255,.18) 0)}
+  #pprog .lockmark{position:absolute;top:-3px;width:2px;height:9px;background:#FFB2E4;border-radius:1px}
+  #pprog{overflow:visible}
+  #pprog i{position:relative}
+
+  .sellerhd{display:flex;align-items:center;gap:10px}
+  .slogo{width:38px;height:38px;border-radius:10px;flex:0 0 auto;display:flex;align-items:center;justify-content:center;
+    background:linear-gradient(135deg,#FF8000,#D9008D);font-size:20px;font-weight:900;color:#fff}
+  .sellerhd .ai{flex:1;min-width:0}
+  .sellerhd .an{font-size:14.5px;font-weight:800}
+  .sellerhd .ad{font-size:10.5px;color:#A7A1B2;margin-top:1px}
+  .lang{display:flex;border:1px solid rgba(255,255,255,.14);border-radius:999px;overflow:hidden;flex:0 0 auto}
+  .lang button{font-size:10.5px;font-weight:800;padding:6px 10px;color:#A7A1B2}
+  .lang button.on{background:rgba(255,178,228,.16);color:#FFB2E4}
+  .pricebar{display:flex;gap:8px;margin-top:10px}
+  .pricebar div{flex:1;border-radius:11px;padding:8px 10px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);font-size:10.5px;color:#A7A1B2;line-height:1.35}
+  .pricebar b{display:block;font-size:15px;color:#FAF9FC;font-weight:900}
+  .pricebar .pk{border-color:rgba(255,178,228,.35);background:linear-gradient(135deg,rgba(217,0,141,.18),rgba(109,23,206,.1))}
+  .pricebar .pk b{color:#FFB2E4}
+
+  .pgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}
+  @media (min-width:560px){.pgrid{grid-template-columns:repeat(4,minmax(0,1fr))}}
+  .pcard{position:relative;border-radius:11px;overflow:hidden;background:#241B30;border:1px solid rgba(255,255,255,.08);text-align:left;padding:0}
+  .pcard img{display:block;width:100%;aspect-ratio:9/16;object-fit:cover}
+  .pcard .tg{position:absolute;left:5px;right:5px;bottom:5px;border-radius:7px;padding:4px 6px;font-size:9.5px;font-weight:800;
+    background:rgba(18,13,26,.86);backdrop-filter:blur(4px);text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .pcard .tg.own{background:rgba(0,128,67,.9)}
+  .pcard .tg.amb{background:rgba(179,90,0,.92)}
+
+  .runs{display:flex;flex-direction:column;gap:8px}
+  .runcard .thumb{width:34px;height:60px;border-radius:7px;object-fit:cover;flex:0 0 auto}
+
+  /* pack panel */
+  .ppanel{position:fixed;inset:0;z-index:70;background:#120D1A;display:flex;flex-direction:column;overflow-y:auto;animation:fade .25s;
+    padding-bottom:calc(84px + env(safe-area-inset-bottom,0px))}
+  .ppanel .hero{position:relative;height:210px;flex:0 0 auto;overflow:hidden}
+  .ppanel .hero img{width:100%;height:100%;object-fit:cover;object-position:center 30%;filter:brightness(.55)}
+  .ppanel .hero::after{content:"";position:absolute;inset:0;background:linear-gradient(transparent 30%,#120D1A)}
+  .ppanel .x{position:absolute;top:calc(12px + env(safe-area-inset-top,0px));left:12px;z-index:2;width:38px;height:38px;border-radius:50%;
+    background:rgba(22,16,33,.7);border:1px solid rgba(255,255,255,.14);font-size:17px}
+  .ppanel .body{padding:0 16px;margin-top:-58px;position:relative;z-index:2;display:flex;flex-direction:column;gap:12px}
+  .ppanel .kick{font-size:10px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#FFB2E4}
+  .ppanel h2{margin:0;font-size:20px;font-weight:800;line-height:1.25}
+  .ppanel .ds{font-size:12.5px;color:#C9C3D4;line-height:1.5}
+  .eprow{display:flex;align-items:center;gap:11px;padding:9px;border-radius:12px;background:rgba(255,255,255,.045);text-align:left;width:100%}
+  .eprow .th{position:relative;width:112px;flex:0 0 auto;aspect-ratio:16/9;border-radius:8px;overflow:hidden;background:#000}
+  .eprow .th img{width:100%;height:100%;object-fit:cover;display:block}
+  .eprow .th .du{position:absolute;right:4px;bottom:4px;background:rgba(0,0,0,.75);border-radius:4px;padding:1px 5px;font-size:9.5px;font-weight:700;font-variant-numeric:tabular-nums}
+  .eprow .ei{flex:1;min-width:0}
+  .eprow .en{font-size:10px;font-weight:800;color:#6E6579;letter-spacing:.08em}
+  .eprow .et{font-size:12.5px;font-weight:700;line-height:1.35;margin-top:1px}
+  .eprow .es{font-size:10.5px;font-weight:700;margin-top:4px;color:#FFB2E4}
+  .eprow .es.own{color:#7BE8B0}
+  .eprow.off{opacity:.45}
+  .eprow.off .es{color:#A7A1B2}
+  .bigbuy{display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;background:#D9008D;border-radius:13px;padding:14px 16px;font-weight:800;font-size:14.5px}
+  .bigbuy small{display:block;font-size:10.5px;font-weight:600;color:rgba(255,255,255,.85)}
+  .bigbuy .pp{font-size:22px;font-weight:900}
+  .ownbar{border-radius:12px;padding:12px 14px;background:rgba(0,128,67,.18);border:1px solid rgba(61,201,138,.35);color:#7BE8B0;font-size:12.5px;font-weight:700}
+
+  /* two-option wall */
+  .opts{display:flex;flex-direction:column;gap:9px;margin-bottom:12px}
+  .opt{display:flex;align-items:center;gap:12px;width:100%;text-align:left;border-radius:14px;padding:12px 14px;
+    border:1.5px solid rgba(255,255,255,.14);background:rgba(255,255,255,.04)}
+  .opt .rd{width:18px;height:18px;border-radius:50%;border:2px solid #665E75;flex:0 0 auto;display:flex;align-items:center;justify-content:center}
+  .opt.sel{border-color:#FFB2E4;background:linear-gradient(135deg,rgba(217,0,141,.2),rgba(109,23,206,.12))}
+  .opt.sel .rd{border-color:#FFB2E4}
+  .opt.sel .rd::after{content:"";width:8px;height:8px;border-radius:50%;background:#FFB2E4}
+  .opt .oi{flex:1;min-width:0}
+  .opt .ol{font-size:14px;font-weight:800;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+  .opt .os{font-size:11.5px;color:#A7A1B2;margin-top:2px}
+  .opt .op{font-size:24px;font-weight:900;font-variant-numeric:tabular-nums;white-space:nowrap}
+  .opt .op s{font-size:12px;color:#665E75;font-weight:700;margin-right:4px}
+  .save{font-size:9.5px;font-weight:800;color:#7BE8B0;background:rgba(0,128,67,.25);border-radius:999px;padding:2px 7px}
+  .sheet{padding-bottom:calc(84px + env(safe-area-inset-bottom,0px))}
+</style>
+</head>
+<body>
+
+<div id="app" class="mode-live">
+  <div id="player-wrap">
+    <video id="tv" playsinline muted autoplay></video>
+    <div id="tv-fallback" style="background-image:url(data:image/jpeg;base64,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)"></div>
+    <div class="lv"><i></i>LIVE</div>
+    <button id="tv-sound" aria-label="आवाज़">&#128263;</button>
+    <div class="redline"></div>
+    <div id="banner"><span class="cn">2</span><span class="nm">Dangal TV</span><button class="hb" id="helpbtn2">?</button></div>
+    <div id="remote"><button id="ch-up" aria-label="अगला चैनल">▲</button><span class="lbl">CH</span><button id="ch-dn" aria-label="पिछला चैनल">▼</button></div>
+    <div id="coach">भक्ति कहानियों के लिए चैनल बदलें →</div>
+  </div>
+  <div id="chbar"><span class="cn">2</span><span class="nm">Dangal TV</span>
+    <button id="helpbtn" aria-label="मदद">?</button><span class="all">सभी चैनल ›</span></div>
+  <div id="store"></div>
+</div>
+
+<div id="crt" class="hide"><div class="noise"></div><div class="scan"></div><div class="num"></div><div class="nm"></div></div>
+<div id="toast"></div>
+
+<div id="promo" class="hide">
+  <video id="pv" playsinline preload="auto"></video>
+  <div id="chip"><span class="dot"></span><span class="nm"></span><span class="ct">मुफ़्त</span></div>
+  <div id="pill"></div>
+  <button id="pback" aria-label="वापस">‹</button>
+  <div id="free"><span class="ring"></span><span id="freetx">10 सेकंड मुफ़्त</span></div>
+  <button id="punmute" class="hide">🔊 आवाज़ चालू करें</button>
+  <div id="pprog"><i></i></div>
+</div>
+
+<div id="scrim"></div>
+
+<div id="sheet" class="sheet">
+  <div class="grab"></div>
+  <h3 id="sh-title">आगे देखने के लिए चुनें</h3>
+  <p class="sub" id="sh-sub"></p>
+  <div class="opts" id="opts"></div>
+  <button class="paybtn" id="paybtn"><span class="upi">UPI</span><span class="lbl"></span></button>
+  <button class="skip" id="skipbtn">अभी नहीं</button>
+  <div class="trust">सभी कीमतें GST सहित · कोई ऑटो-रिन्यूअल नहीं · <b id="trusthelp">मदद</b></div>
+</div>
+
+<div id="demo">
+  <button data-d="wall">⏭ 10 सेकंड<br>पर जाएँ</button>
+  <button data-d="low">⏳ 2 मिनट<br>बचे</button>
+  <button data-d="expire">✕ समय<br>ख़त्म करें</button>
+  <button data-d="reset">↺ सब<br>रीसेट</button>
+</div>
+
+<script>
+const CAT = {"sellerId": "ayodhyatra", "sellerName": "अयोध्यात्रा", "pricing": {"packPaise": 1400, "singlePaise": 600, "gstIncluded": true, "windowHours": 24, "previewSec": 10}, "packs": [{"packId": "ayo-01", "title": "The Bloodline That Bent Heaven", "description": "Ram's ancestors — the kings who paid impossible prices for dharma.", "art": {"hi": "ayodhyatra/art/ayo-01-hi.jpg", "en": "ayodhyatra/art/ayo-01-en.jpg"}, "episodes": [{"episodeId": "ayo-01-e1", "order": 1, "title": "Nandini cow and Dilip: A Raghuvanshi", "hlsUrl": "https://customer-piyicbti10117uiy.cloudflarestream.com/dcf3bd57af705321636dc513d491fd1e/manifest/video.m3u8", "poster": "https://customer-piyicbti10117uiy.cloudflarestream.com/dcf3bd57af705321636dc513d491fd1e/thumbnails/thumbnail.jpg?time=12s&height=360", "durationSec": 70, "unavailable": false}, {"episodeId": "ayo-01-e2", "order": 2, "title": "King Bhagirath: Ram's ancestor", "hlsUrl": "https://customer-piyicbti10117uiy.cloudflarestream.com/0136b9dfc7dd97d7ce7335b6f92f801d/manifest/video.m3u8", "poster": "https://customer-piyicbti10117uiy.cloudflarestream.com/0136b9dfc7dd97d7ce7335b6f92f801d/thumbnails/thumbnail.jpg?time=12s&height=360", "durationSec": 57, "unavailable": false}, {"episodeId": "ayo-01-e3", "order": 3, "title": "Ganga delivers Bhagirath's ancestors", "hlsUrl": "https://customer-piyicbti10117uiy.cloudflarestream.com/78d63f75c6fc409e272c5541ecd9e8cc/manifest/video.m3u8", "poster": "https://customer-piyicbti10117uiy.cloudflarestream.com/78d63f75c6fc409e272c5541ecd9e8cc/thumbnails/thumbnail.jpg?time=12s&height=360", "durationSec": 59, "unavailable": false}]}, {"packId": "ayo-02", "title": "The Sage Who Tested Kings: Vishwamitra", "description": "Vishwamitra enters the Ikshvaku story — and is himself tested.", "art": {"hi": "ayodhyatra/art/ayo-02-hi.jpg", "en": "ayodhyatra/art/ayo-02-en.jpg"}, "episodes": [{"episodeId": "ayo-02-e1", "order": 1, "title": "Trishanku asks Vishwamitra for a boon", "hlsUrl": "https://customer-piyicbti10117uiy.cloudflarestream.com/2023abeedec0aab2a5861cf9478a150d/manifest/video.m3u8", "poster": "https://customer-piyicbti10117uiy.cloudflarestream.com/2023abeedec0aab2a5861cf9478a150d/thumbnails/thumbnail.jpg?time=12s&height=360", "durationSec": 64, "unavailable": false}, {"episodeId": "ayo-02-e2", "order": 2, "title": "Harishchandra: A Raghuvanshi", "hlsUrl": "https://customer-piyicbti10117uiy.cloudflarestream.com/ec9cdb54774217f3aaed73e2206f2c7e/manifest/video.m3u8", "poster": "https://customer-piyicbti10117uiy.cloudflarestream.com/ec9cdb54774217f3aaed73e2206f2c7e/thumbnails/thumbnail.jpg?time=12s&height=360", "durationSec": 62, "unavailable": false}, {"episodeId": "ayo-02-e3", "order": 3, "title": "Meneka decevies Vishwamitra", "hlsUrl": "https://customer-piyicbti10117uiy.cloudflarestream.com/ca1a4e01f5d79702ddb2c1775676f52e/manifest/video.m3u8", "poster": "https://customer-piyicbti10117uiy.cloudflarestream.com/ca1a4e01f5d79702ddb2c1775676f52e/thumbnails/thumbnail.jpg?time=12s&height=360", "durationSec": 63, "unavailable": false}]}, {"packId": "ayo-03", "title": "Sita and her birthplace Mithila", "description": "Where Sita was found and where wisdom outranked pride: Mithila", "art": {"hi": "ayodhyatra/art/ayo-03-hi.jpg", "en": "ayodhyatra/art/ayo-03-en.jpg"}, "episodes": [{"episodeId": "ayo-03-e1", "order": 1, "title": "Sita's birth in Mithilia", "hlsUrl": "https://customer-piyicbti10117uiy.cloudflarestream.com/3a7e56f5789526c9ed5de67bf0e7d6e9/manifest/video.m3u8", "poster": "https://customer-piyicbti10117uiy.cloudflarestream.com/3a7e56f5789526c9ed5de67bf0e7d6e9/thumbnails/thumbnail.jpg?time=12s&height=360", "durationSec": 59, "unavailable": false}, {"episodeId": "ayo-03-e2", "order": 2, "title": "Mithilia's sabha humbled by Ashtavakra", "hlsUrl": "https://customer-piyicbti10117uiy.cloudflarestream.com/75d4b80fc7e8d052d5a3f5fcb592907d/manifest/video.m3u8", "poster": "https://customer-piyicbti10117uiy.cloudflarestream.com/75d4b80fc7e8d052d5a3f5fcb592907d/thumbnails/thumbnail.jpg?time=12s&height=360", "durationSec": 61, "unavailable": false}, {"episodeId": "ayo-03-e3", "order": 3, "title": "Savitri: Sita's ideal", "hlsUrl": "https://customer-piyicbti10117uiy.cloudflarestream.com/7c433dc0cec7f639af8dd9cbf3299d4c/manifest/video.m3u8", "poster": "https://customer-piyicbti10117uiy.cloudflarestream.com/7c433dc0cec7f639af8dd9cbf3299d4c/thumbnails/thumbnail.jpg?time=12s&height=360", "durationSec": 63, "unavailable": false}]}, {"packId": "ayo-04", "title": "The Curse, The Bow, The Axe", "description": "Ram's journey to Mithila — one stone freed, one bow broken, one axe raised.", "art": {"hi": "ayodhyatra/art/ayo-04-hi.jpg", "en": "ayodhyatra/art/ayo-04-en.jpg"}, "episodes": [{"episodeId": "ayo-04-e1", "order": 1, "title": "Story of Ahilya", "hlsUrl": "https://customer-piyicbti10117uiy.cloudflarestream.com/a79c6d49e18fe1f08586639766db038f/manifest/video.m3u8", "poster": "https://customer-piyicbti10117uiy.cloudflarestream.com/a79c6d49e18fe1f08586639766db038f/thumbnails/thumbnail.jpg?time=12s&height=360", "durationSec": 59, "unavailable": false}, {"episodeId": "ayo-04-e2", "order": 2, "title": "Ram breaks Pinaka: Battle with Parshuram", "hlsUrl": "https://customer-piyicbti10117uiy.cloudflarestream.com/1a0e4c9ce590023b82b760d9cf4b2166/manifest/video.m3u8", "poster": "https://customer-piyicbti10117uiy.cloudflarestream.com/1a0e4c9ce590023b82b760d9cf4b2166/thumbnails/thumbnail.jpg?time=12s&height=360", "durationSec": 60, "unavailable": false}, {"episodeId": "ayo-04-e3", "order": 3, "title": "Parshuram's Back Story", "hlsUrl": "https://customer-piyicbti10117uiy.cloudflarestream.com/0e1024967cb39a7c27925f093493d1dc/manifest/video.m3u8", "poster": "https://customer-piyicbti10117uiy.cloudflarestream.com/0e1024967cb39a7c27925f093493d1dc/thumbnails/thumbnail.jpg?time=12s&height=360", "durationSec": 64, "unavailable": false}]}, {"packId": "ayo-05", "title": "Dasharath's Karma", "description": "A crime hidden for decades, the curse it carried, and the queen who triggered it.", "art": {"hi": "ayodhyatra/art/ayo-05-hi.jpg", "en": "ayodhyatra/art/ayo-05-en.jpg"}, "episodes": [{"episodeId": "ayo-05-e1", "order": 1, "title": "A hidden Crime Committed by Dasarath", "hlsUrl": "https://customer-piyicbti10117uiy.cloudflarestream.com/2af579de3a16eacf05f05d72e6d75634/manifest/video.m3u8", "poster": "https://customer-piyicbti10117uiy.cloudflarestream.com/2af579de3a16eacf05f05d72e6d75634/thumbnails/thumbnail.jpg?time=12s&height=360", "durationSec": 55, "unavailable": false}, {"episodeId": "ayo-05-e2", "order": 2, "title": "Dashrath Repents His Deeds", "hlsUrl": "https://customer-piyicbti10117uiy.cloudflarestream.com/6dd7841395537e935e1d837ca9000a3c/manifest/video.m3u8", "poster": "https://customer-piyicbti10117uiy.cloudflarestream.com/6dd7841395537e935e1d837ca9000a3c/thumbnails/thumbnail.jpg?time=12s&height=360", "durationSec": 54, "unavailable": false}, {"episodeId": "ayo-05-e3", "order": 3, "title": "Kaikayi Repents her Actions", "hlsUrl": "https://customer-piyicbti10117uiy.cloudflarestream.com/2af579de3a16eacf05f05d72e6d75634/manifest/video.m3u8", "poster": "https://customer-piyicbti10117uiy.cloudflarestream.com/2af579de3a16eacf05f05d72e6d75634/thumbnails/thumbnail.jpg?time=12s&height=360", "durationSec": 55, "unavailable": true}]}, {"packId": "ayo-06", "title": "The Night Ayodhya Broke", "description": "The exile begins — the goodbye, the tribal king who welcomes Ram, the boatman who rows him across.", "art": {"hi": "ayodhyatra/art/ayo-06-hi.jpg", "en": "ayodhyatra/art/ayo-06-en.jpg"}, "episodes": [{"episodeId": "ayo-06-e1", "order": 1, "title": "A Tryst Before Separation: Urmila & Laxman", "hlsUrl": "https://customer-piyicbti10117uiy.cloudflarestream.com/d7fefbe77336cba2304d19b8450247b9/manifest/video.m3u8", "poster": "https://customer-piyicbti10117uiy.cloudflarestream.com/d7fefbe77336cba2304d19b8450247b9/thumbnails/thumbnail.jpg?time=12s&height=360", "durationSec": 59, "unavailable": false}, {"episodeId": "ayo-06-e2", "order": 2, "title": "Ram in vanvas with Nishad Raj Guha", "hlsUrl": "https://customer-piyicbti10117uiy.cloudflarestream.com/6cae33739cd08360f415126b90552c29/manifest/video.m3u8", "poster": "https://customer-piyicbti10117uiy.cloudflarestream.com/6cae33739cd08360f415126b90552c29/thumbnails/thumbnail.jpg?time=12s&height=360", "durationSec": 58, "unavailable": false}, {"episodeId": "ayo-06-e3", "order": 3, "title": "Kevat rows Ram, Sita and Laxman through river", "hlsUrl": "https://customer-piyicbti10117uiy.cloudflarestream.com/4e832cb082cc59994e29f39f262e3879/manifest/video.m3u8", "poster": "https://customer-piyicbti10117uiy.cloudflarestream.com/4e832cb082cc59994e29f39f262e3879/thumbnails/thumbnail.jpg?time=12s&height=360", "durationSec": 53, "unavailable": false}]}, {"packId": "ayo-07", "title": "The Forest Years", "description": "Chitrakoot's reunion, a vulture's last stand, and a tribal woman's berries.", "art": {"hi": "ayodhyatra/art/ayo-07-hi.jpg", "en": "ayodhyatra/art/ayo-07-en.jpg"}, "episodes": [{"episodeId": "ayo-07-e1", "order": 1, "title": "Bharat visits Ram in Forest", "hlsUrl": "https://customer-piyicbti10117uiy.cloudflarestream.com/db72838d6325ecf96b0f734338f38a7a/manifest/video.m3u8", "poster": "https://customer-piyicbti10117uiy.cloudflarestream.com/db72838d6325ecf96b0f734338f38a7a/thumbnails/thumbnail.jpg?time=12s&height=360", "durationSec": 61, "unavailable": false}, {"episodeId": "ayo-07-e2", "order": 2, "title": "Ravan's battle with Jayatu", "hlsUrl": "https://customer-piyicbti10117uiy.cloudflarestream.com/3e82eb9597f5fb11ad6209ebd6600fcc/manifest/video.m3u8", "poster": "https://customer-piyicbti10117uiy.cloudflarestream.com/3e82eb9597f5fb11ad6209ebd6600fcc/thumbnails/thumbnail.jpg?time=12s&height=360", "durationSec": 50, "unavailable": false}, {"episodeId": "ayo-07-e3", "order": 3, "title": "Tale of Shabri and Ram", "hlsUrl": "https://customer-piyicbti10117uiy.cloudflarestream.com/d9ff3c4d2ef635ae2b09cd58cf0c809a/manifest/video.m3u8", "poster": "https://customer-piyicbti10117uiy.cloudflarestream.com/d9ff3c4d2ef635ae2b09cd58cf0c809a/thumbnails/thumbnail.jpg?time=12s&height=360", "durationSec": 53, "unavailable": false}]}, {"packId": "ayo-08", "title": "Hanuman Remembers Who He Is", "description": "From a child who swallowed the sun to the leap that found Sita.", "art": {"hi": "ayodhyatra/art/ayo-08-hi.jpg", "en": "ayodhyatra/art/ayo-08-en.jpg"}, "episodes": [{"episodeId": "ayo-08-e1", "order": 1, "title": "Hanuman's attempt to eat Sun", "hlsUrl": "https://customer-piyicbti10117uiy.cloudflarestream.com/8b014e551e74d3b82a2895cfbf8e81e4/manifest/video.m3u8", "poster": "https://customer-piyicbti10117uiy.cloudflarestream.com/8b014e551e74d3b82a2895cfbf8e81e4/thumbnails/thumbnail.jpg?time=12s&height=360", "durationSec": 50, "unavailable": false}, {"episodeId": "ayo-08-e2", "order": 2, "title": "Jambavan motivates Hanuman", "hlsUrl": "https://customer-piyicbti10117uiy.cloudflarestream.com/3eb8846cef42977c41db3ddeae504ad3/manifest/video.m3u8", "poster": "https://customer-piyicbti10117uiy.cloudflarestream.com/3eb8846cef42977c41db3ddeae504ad3/thumbnails/thumbnail.jpg?time=12s&height=360", "durationSec": 70, "unavailable": false}, {"episodeId": "ayo-08-e3", "order": 3, "title": "Hanuman visits Sita in Ashok Vatika", "hlsUrl": "https://customer-piyicbti10117uiy.cloudflarestream.com/11c750f03c4530d7d072fe5e4f759e67/manifest/video.m3u8", "poster": "https://customer-piyicbti10117uiy.cloudflarestream.com/11c750f03c4530d7d072fe5e4f759e67/thumbnails/thumbnail.jpg?time=12s&height=360", "durationSec": 66, "unavailable": false}]}, {"packId": "ayo-09", "title": "Lanka Before the War", "description": "Ravan at his peak, the brother who walked away, and the bridge that rose.", "art": {"hi": "ayodhyatra/art/ayo-09-hi.jpg", "en": "ayodhyatra/art/ayo-09-en.jpg"}, "episodes": [{"episodeId": "ayo-09-e1", "order": 1, "title": "Ravan goes to Kailash", "hlsUrl": "https://customer-piyicbti10117uiy.cloudflarestream.com/19a112628b36ea38299c033b416bd24c/manifest/video.m3u8", "poster": "https://customer-piyicbti10117uiy.cloudflarestream.com/19a112628b36ea38299c033b416bd24c/thumbnails/thumbnail.jpg?time=12s&height=360", "durationSec": 57, "unavailable": false}, {"episodeId": "ayo-09-e2", "order": 2, "title": "A Brother Who Chooses Dharma Over Family: Vibhishan", "hlsUrl": "https://customer-piyicbti10117uiy.cloudflarestream.com/d5e606c235ef9098963f514f784753e1/manifest/video.m3u8", "poster": "https://customer-piyicbti10117uiy.cloudflarestream.com/d5e606c235ef9098963f514f784753e1/thumbnails/thumbnail.jpg?time=12s&height=360", "durationSec": 64, "unavailable": false}, {"episodeId": "ayo-09-e3", "order": 3, "title": "A Tiny Squirrel's Contribution is Noticed by Ram", "hlsUrl": "https://customer-piyicbti10117uiy.cloudflarestream.com/fdb1c1763167c8d59bc30e3f25592efd/manifest/video.m3u8", "poster": "https://customer-piyicbti10117uiy.cloudflarestream.com/fdb1c1763167c8d59bc30e3f25592efd/thumbnails/thumbnail.jpg?time=12s&height=360", "durationSec": 55, "unavailable": false}]}, {"packId": "ayo-10", "title": "The War and What It Cost", "description": "A mountain carried through the night, a widow's last look, a reunion that ends in fire.", "art": {"hi": "ayodhyatra/art/ayo-10-hi.jpg", "en": "ayodhyatra/art/ayo-10-en.jpg"}, "episodes": [{"episodeId": "ayo-10-e1", "order": 1, "title": "Hanuman Brings Sanjeevani", "hlsUrl": "https://customer-piyicbti10117uiy.cloudflarestream.com/6b9152702d64250cb44c918077f257b4/manifest/video.m3u8", "poster": "https://customer-piyicbti10117uiy.cloudflarestream.com/6b9152702d64250cb44c918077f257b4/thumbnails/thumbnail.jpg?time=12s&height=360", "durationSec": 68, "unavailable": false}, {"episodeId": "ayo-10-e2", "order": 2, "title": "Mandodari Sees Her Husband One Last Time", "hlsUrl": "https://customer-piyicbti10117uiy.cloudflarestream.com/c10b2c5f5db77aa9009f6e1f16f808fb/manifest/video.m3u8", "poster": "https://customer-piyicbti10117uiy.cloudflarestream.com/c10b2c5f5db77aa9009f6e1f16f808fb/thumbnails/thumbnail.jpg?time=12s&height=360", "durationSec": 55, "unavailable": false}, {"episodeId": "ayo-10-e3", "order": 3, "title": "Sita meets Ram after 14 years", "hlsUrl": "https://customer-piyicbti10117uiy.cloudflarestream.com/0a4aee6cebee2c26e1ca7679e7438e47/manifest/video.m3u8", "poster": "https://customer-piyicbti10117uiy.cloudflarestream.com/0a4aee6cebee2c26e1ca7679e7438e47/thumbnails/thumbnail.jpg?time=12s&height=360", "durationSec": 63, "unavailable": false}]}, {"packId": "ayo-11", "title": "Homecoming, and What Followed", "description": "The mother who waited 14 years, the sons who challenged their father, and the earth that opened for Sita.", "art": {"hi": "ayodhyatra/art/ayo-11-hi.jpg", "en": "ayodhyatra/art/ayo-11-en.jpg"}, "episodes": [{"episodeId": "ayo-11-e1", "order": 1, "title": "Kaushalya meets Ram after 14 years", "hlsUrl": "https://customer-piyicbti10117uiy.cloudflarestream.com/aeaefc8dc6e9bc7c43bc70cb1434d266/manifest/video.m3u8", "poster": "https://customer-piyicbti10117uiy.cloudflarestream.com/aeaefc8dc6e9bc7c43bc70cb1434d266/thumbnails/thumbnail.jpg?time=12s&height=360", "durationSec": 64, "unavailable": false}, {"episodeId": "ayo-11-e2", "order": 2, "title": "A Playful Challenge by Ram's Sons", "hlsUrl": "https://customer-piyicbti10117uiy.cloudflarestream.com/c492a1ffd69de9ca12bad4b18c488601/manifest/video.m3u8", "poster": "https://customer-piyicbti10117uiy.cloudflarestream.com/c492a1ffd69de9ca12bad4b18c488601/thumbnails/thumbnail.jpg?time=12s&height=360", "durationSec": 58, "unavailable": false}, {"episodeId": "ayo-11-e3", "order": 3, "title": "Sita goes in earth", "hlsUrl": "https://customer-piyicbti10117uiy.cloudflarestream.com/1f9f12430131f59a98e076d155e66581/manifest/video.m3u8", "poster": "https://customer-piyicbti10117uiy.cloudflarestream.com/1f9f12430131f59a98e076d155e66581/thumbnails/thumbnail.jpg?time=12s&height=360", "durationSec": 49, "unavailable": false}]}, {"packId": "ayo-12", "title": "Ram Leaves — But the Story Doesn't", "description": "Ram's final walk into the Saryu, and the dacoit who made sure we'd still be telling it.", "art": {"hi": "ayodhyatra/art/ayo-12-hi.jpg", "en": "ayodhyatra/art/ayo-12-en.jpg"}, "episodes": [{"episodeId": "ayo-12-e1", "order": 1, "title": "Ram is taking jal samadhi", "hlsUrl": "https://customer-piyicbti10117uiy.cloudflarestream.com/efed804bf17a0631d0f02eb5cba3b25d/manifest/video.m3u8", "poster": "https://customer-piyicbti10117uiy.cloudflarestream.com/efed804bf17a0631d0f02eb5cba3b25d/thumbnails/thumbnail.jpg?time=12s&height=360", "durationSec": 60, "unavailable": false}, {"episodeId": "ayo-12-e2", "order": 2, "title": "Sinner to Saint: Valmiki", "hlsUrl": "https://customer-piyicbti10117uiy.cloudflarestream.com/f7a2d61a265ef562da61723604c789e0/manifest/video.m3u8", "poster": "https://customer-piyicbti10117uiy.cloudflarestream.com/f7a2d61a265ef562da61723604c789e0/thumbnails/thumbnail.jpg?time=12s&height=360", "durationSec": 65, "unavailable": false}, {"episodeId": "ayo-12-e3", "order": 3, "title": "An Unfortunate Incident that made Valmiki a Poet", "hlsUrl": "https://customer-piyicbti10117uiy.cloudflarestream.com/b848ea55d11d803339b792804aeef758/manifest/video.m3u8", "poster": "https://customer-piyicbti10117uiy.cloudflarestream.com/b848ea55d11d803339b792804aeef758/thumbnails/thumbnail.jpg?time=12s&height=360", "durationSec": 66, "unavailable": false}]}, {"packId": "ayo-13", "title": "The Poets Who Saw God", "description": "Three men who went blind to the world and saw Ram, Krishna and the formless.", "art": {"hi": "ayodhyatra/art/ayo-13-hi.jpg", "en": "ayodhyatra/art/ayo-13-en.jpg"}, "episodes": [{"episodeId": "ayo-13-e1", "order": 1, "title": "Tulsidas Realises Ram", "hlsUrl": "https://customer-piyicbti10117uiy.cloudflarestream.com/4a7e074ce099d604d744199bcc61702b/manifest/video.m3u8", "poster": "https://customer-piyicbti10117uiy.cloudflarestream.com/4a7e074ce099d604d744199bcc61702b/thumbnails/thumbnail.jpg?time=12s&height=360", "durationSec": 64, "unavailable": false}, {"episodeId": "ayo-13-e2", "order": 2, "title": "Sant Surdas", "hlsUrl": "https://customer-piyicbti10117uiy.cloudflarestream.com/023b6be9e1b2c794952834c59d71d06d/manifest/video.m3u8", "poster": "https://customer-piyicbti10117uiy.cloudflarestream.com/023b6be9e1b2c794952834c59d71d06d/thumbnails/thumbnail.jpg?time=12s&height=360", "durationSec": 58, "unavailable": false}, {"episodeId": "ayo-13-e3", "order": 3, "title": "Sant Kabir", "hlsUrl": "https://customer-piyicbti10117uiy.cloudflarestream.com/c9cea57594380f901418191847d68a1c/manifest/video.m3u8", "poster": "https://customer-piyicbti10117uiy.cloudflarestream.com/c9cea57594380f901418191847d68a1c/thumbnails/thumbnail.jpg?time=12s&height=360", "durationSec": 62, "unavailable": false}]}, {"packId": "ayo-14", "title": "Story of Vitthal and his Devotees", "description": "A son serving his parents, a God standing on a brick for 28 yugas, and the potter who tested the saints.", "art": {"hi": "ayodhyatra/art/ayo-14-hi.jpg", "en": "ayodhyatra/art/ayo-14-en.jpg"}, "episodes": [{"episodeId": "ayo-14-e1", "order": 1, "title": "Pundarik serves his parents", "hlsUrl": "https://customer-piyicbti10117uiy.cloudflarestream.com/2d6b62373892ac824b069dc450a7e6d0/manifest/video.m3u8", "poster": "https://customer-piyicbti10117uiy.cloudflarestream.com/2d6b62373892ac824b069dc450a7e6d0/thumbnails/thumbnail.jpg?time=12s&height=360", "durationSec": 62, "unavailable": false}, {"episodeId": "ayo-14-e2", "order": 2, "title": "Sant Gora Kumbhar", "hlsUrl": "https://customer-piyicbti10117uiy.cloudflarestream.com/388381bab6e1c143a80c9d9fadc1a184/manifest/video.m3u8", "poster": "https://customer-piyicbti10117uiy.cloudflarestream.com/388381bab6e1c143a80c9d9fadc1a184/thumbnails/thumbnail.jpg?time=12s&height=360", "durationSec": 63, "unavailable": false}, {"episodeId": "ayo-14-e3", "order": 3, "title": "Pandharpur's Namdev", "hlsUrl": "https://customer-piyicbti10117uiy.cloudflarestream.com/4bd4b5500ed2aec88140bc8d901f1e66/manifest/video.m3u8", "poster": "https://customer-piyicbti10117uiy.cloudflarestream.com/4bd4b5500ed2aec88140bc8d901f1e66/thumbnails/thumbnail.jpg?time=12s&height=360", "durationSec": 54, "unavailable": false}]}, {"packId": "ayo-15", "title": "Bhakti Has No Caste", "description": "A grocer, a cobbler and a girl from Villiputur — all let in through the front door.", "art": {"hi": "ayodhyatra/art/ayo-15-hi.jpg", "en": "ayodhyatra/art/ayo-15-en.jpg"}, "episodes": [{"episodeId": "ayo-15-e1", "order": 1, "title": "Sant Tukaram", "hlsUrl": "https://customer-piyicbti10117uiy.cloudflarestream.com/78730a8b16fd7efab8d9da9cf0dc2936/manifest/video.m3u8", "poster": "https://customer-piyicbti10117uiy.cloudflarestream.com/78730a8b16fd7efab8d9da9cf0dc2936/thumbnails/thumbnail.jpg?time=12s&height=360", "durationSec": 55, "unavailable": false}, {"episodeId": "ayo-15-e2", "order": 2, "title": "Sant Raidas", "hlsUrl": "https://customer-piyicbti10117uiy.cloudflarestream.com/eab81284fb3c70b4178a66908aaf7bc0/manifest/video.m3u8", "poster": "https://customer-piyicbti10117uiy.cloudflarestream.com/eab81284fb3c70b4178a66908aaf7bc0/thumbnails/thumbnail.jpg?time=12s&height=360", "durationSec": 44, "unavailable": false}, {"episodeId": "ayo-15-e3", "order": 3, "title": "Villiputur & Ranganath", "hlsUrl": "https://customer-piyicbti10117uiy.cloudflarestream.com/e139243ef4abd31879927f9352a3aa64/manifest/video.m3u8", "poster": "https://customer-piyicbti10117uiy.cloudflarestream.com/e139243ef4abd31879927f9352a3aa64/thumbnails/thumbnail.jpg?time=12s&height=360", "durationSec": 61, "unavailable": false}]}, {"packId": "ayo-16", "title": "Jagannath Puri", "description": "The king who built it, the poet whose song God finished, the dog God fed.", "art": {"hi": "ayodhyatra/art/ayo-16-hi.jpg", "en": "ayodhyatra/art/ayo-16-en.jpg"}, "episodes": [{"episodeId": "ayo-16-e1", "order": 1, "title": "Indradyumn: King who built Puri", "hlsUrl": "https://customer-piyicbti10117uiy.cloudflarestream.com/0a55b702d6a7f0f609f2a5568552751b/manifest/video.m3u8", "poster": "https://customer-piyicbti10117uiy.cloudflarestream.com/0a55b702d6a7f0f609f2a5568552751b/thumbnails/thumbnail.jpg?time=12s&height=360", "durationSec": 70, "unavailable": false}, {"episodeId": "ayo-16-e2", "order": 2, "title": "Jayadev composes Geet Govind", "hlsUrl": "https://customer-piyicbti10117uiy.cloudflarestream.com/f4e4c415f5833524e6c3fb9fb33d2f6f/manifest/video.m3u8", "poster": "https://customer-piyicbti10117uiy.cloudflarestream.com/f4e4c415f5833524e6c3fb9fb33d2f6f/thumbnails/thumbnail.jpg?time=12s&height=360", "durationSec": 71, "unavailable": false}, {"episodeId": "ayo-16-e3", "order": 3, "title": "Chaitanya Mahaprabu's companion: A dog", "hlsUrl": "https://customer-piyicbti10117uiy.cloudflarestream.com/2a652b1595ed80e25bc277792a8ac64a/manifest/video.m3u8", "poster": "https://customer-piyicbti10117uiy.cloudflarestream.com/2a652b1595ed80e25bc277792a8ac64a/thumbnails/thumbnail.jpg?time=12s&height=360", "durationSec": 56, "unavailable": false}]}, {"packId": "ayo-17", "title": "Krishna, the Child, Comes to Gokul", "description": "Born in a prison, targeted by a monstress, and one morning his mother saw the universe in his mouth.", "art": {"hi": "ayodhyatra/art/ayo-17-hi.jpg", "en": "ayodhyatra/art/ayo-17-en.jpg"}, "episodes": [{"episodeId": "ayo-17-e1", "order": 1, "title": "Vasudev & Devaki blessed by Vishnu", "hlsUrl": "https://customer-piyicbti10117uiy.cloudflarestream.com/b03ed7ef294f396e797f6c2975043ba2/manifest/video.m3u8", "poster": "https://customer-piyicbti10117uiy.cloudflarestream.com/b03ed7ef294f396e797f6c2975043ba2/thumbnails/thumbnail.jpg?time=12s&height=360", "durationSec": 54, "unavailable": false}, {"episodeId": "ayo-17-e2", "order": 2, "title": "Putna enters Gokul", "hlsUrl": "https://customer-piyicbti10117uiy.cloudflarestream.com/0a8331e7f2ec80d102c195255671ef53/manifest/video.m3u8", "poster": "https://customer-piyicbti10117uiy.cloudflarestream.com/0a8331e7f2ec80d102c195255671ef53/thumbnails/thumbnail.jpg?time=12s&height=360", "durationSec": 55, "unavailable": false}, {"episodeId": "ayo-17-e3", "order": 3, "title": "Yashoda discovers the universe in Krishna's mouth", "hlsUrl": "https://customer-piyicbti10117uiy.cloudflarestream.com/fab7e7ca46e62a393b3b2a95234f268d/manifest/video.m3u8", "poster": "https://customer-piyicbti10117uiy.cloudflarestream.com/fab7e7ca46e62a393b3b2a95234f268d/thumbnails/thumbnail.jpg?time=12s&height=360", "durationSec": 52, "unavailable": false}]}, {"packId": "ayo-18", "title": "Krishna's Pastimes in Vrindavan", "description": "Three times Vrindavan was in danger, and each time the boy they scolded stood between them and it.", "art": {"hi": "ayodhyatra/art/ayo-18-hi.jpg", "en": "ayodhyatra/art/ayo-18-en.jpg"}, "episodes": [{"episodeId": "ayo-18-e1", "order": 1, "title": "Krishan frees 2 Yakshas", "hlsUrl": "https://customer-piyicbti10117uiy.cloudflarestream.com/6df98bf58d91db20ea470d0f2d1680d6/manifest/video.m3u8", "poster": "https://customer-piyicbti10117uiy.cloudflarestream.com/6df98bf58d91db20ea470d0f2d1680d6/thumbnails/thumbnail.jpg?time=12s&height=360", "durationSec": 63, "unavailable": false}, {"episodeId": "ayo-18-e2", "order": 2, "title": "Krishna dances on Kaliya", "hlsUrl": "https://customer-piyicbti10117uiy.cloudflarestream.com/6e44471678c4f30a646b6f63a6abec63/manifest/video.m3u8", "poster": "https://customer-piyicbti10117uiy.cloudflarestream.com/6e44471678c4f30a646b6f63a6abec63/thumbnails/thumbnail.jpg?time=12s&height=360", "durationSec": 56, "unavailable": false}, {"episodeId": "ayo-18-e3", "order": 3, "title": "Indra's ego is humbled by Krishna", "hlsUrl": "https://customer-piyicbti10117uiy.cloudflarestream.com/7cdd9ed827890ed6d008bfbaad68f2ee/manifest/video.m3u8", "poster": "https://customer-piyicbti10117uiy.cloudflarestream.com/7cdd9ed827890ed6d008bfbaad68f2ee/thumbnails/thumbnail.jpg?time=12s&height=360", "durationSec": 169, "unavailable": false}]}, {"packId": "ayo-19", "title": "Ladies Transformed by Krishna: Vrindavan to Mathura", "description": "Play, then longing, then a chariot to Mathura — grace given to a stranger while Vrindavan was still singing.", "art": {"hi": "ayodhyatra/art/ayo-19-hi.jpg", "en": "ayodhyatra/art/ayo-19-en.jpg"}, "episodes": [{"episodeId": "ayo-19-e1", "order": 1, "title": "Radha steals Krishna's flute", "hlsUrl": "https://customer-piyicbti10117uiy.cloudflarestream.com/42f38c7823f428aa6c723782f2b65ba3/manifest/video.m3u8", "poster": "https://customer-piyicbti10117uiy.cloudflarestream.com/42f38c7823f428aa6c723782f2b65ba3/thumbnails/thumbnail.jpg?time=12s&height=360", "durationSec": 67, "unavailable": false}, {"episodeId": "ayo-19-e2", "order": 2, "title": "Gopi's sing Gopi Geet to call Krishna", "hlsUrl": "https://customer-piyicbti10117uiy.cloudflarestream.com/489c1b860001db76208e2fae9e72ef77/manifest/video.m3u8", "poster": "https://customer-piyicbti10117uiy.cloudflarestream.com/489c1b860001db76208e2fae9e72ef77/thumbnails/thumbnail.jpg?time=12s&height=360", "durationSec": 54, "unavailable": false}, {"episodeId": "ayo-19-e3", "order": 3, "title": "Kubja in Mathura", "hlsUrl": "https://customer-piyicbti10117uiy.cloudflarestream.com/05a0780f62f368a9ca7954a12780a009/manifest/video.m3u8", "poster": "https://customer-piyicbti10117uiy.cloudflarestream.com/05a0780f62f368a9ca7954a12780a009/thumbnails/thumbnail.jpg?time=12s&height=360", "durationSec": 62, "unavailable": false}]}, {"packId": "ayo-20", "title": "Krishna: The Ruler of Dwarka", "description": "Why he ran from a battlefield, why he built a city in the sea, and the man who never forgave him for the woman he took.", "art": {"hi": "ayodhyatra/art/ayo-20-hi.jpg", "en": "ayodhyatra/art/ayo-20-en.jpg"}, "episodes": [{"episodeId": "ayo-20-e1", "order": 1, "title": "Kalyavan vs Krishna: A faceoff leading to construction of Dwarka", "hlsUrl": "https://customer-piyicbti10117uiy.cloudflarestream.com/3e7b6bfe1e0aee66ed134f8631f22fca/manifest/video.m3u8", "poster": "https://customer-piyicbti10117uiy.cloudflarestream.com/3e7b6bfe1e0aee66ed134f8631f22fca/thumbnails/thumbnail.jpg?time=12s&height=360", "durationSec": 57, "unavailable": false}, {"episodeId": "ayo-20-e2", "order": 2, "title": "Rukimini requests Dwarakadhish to marry her", "hlsUrl": "https://customer-piyicbti10117uiy.cloudflarestream.com/5f580130ae30a389c317eabf28aff150/manifest/video.m3u8", "poster": "https://customer-piyicbti10117uiy.cloudflarestream.com/5f580130ae30a389c317eabf28aff150/thumbnails/thumbnail.jpg?time=12s&height=360", "durationSec": 53, "unavailable": false}, {"episodeId": "ayo-20-e3", "order": 3, "title": "Krishna curses Shishupala", "hlsUrl": "https://customer-piyicbti10117uiy.cloudflarestream.com/ccd4eb660d82fbeb36f456230239f2cd/manifest/video.m3u8", "poster": "https://customer-piyicbti10117uiy.cloudflarestream.com/ccd4eb660d82fbeb36f456230239f2cd/thumbnails/thumbnail.jpg?time=12s&height=360", "durationSec": 65, "unavailable": false}]}]};
+const $ = id => document.getElementById(id);
+const HLS_URL = 'https://live-dangal.akamaized.net/liveabr/playlist.m3u8';
+const P = CAT.pricing, PREVIEW = P.previewSec, WINDOW = P.windowHours * 3600e3;
+const rs = paise => '₹' + (paise / 100);
+const PACKS = CAT.packs;
+const packOf = pid => PACKS.find(p => p.packId === pid);
+const params = new URLSearchParams(location.search);
+
+/* ---------- events (mocked backend: same shape as store.html) ---------- */
+window.__wiomEvents = window.__wiomEvents || [];
+function ev(name, props){ const e = Object.assign({ev:name, t:Date.now(), seller:CAT.sellerId}, props||{});
+  window.__wiomEvents.push(e); try { console.log('[ayo]', name, props||''); } catch {} }
+
+/* ---------- wallet: {packs:{pid:until}, eps:{eid:{until,paise}}, lang} ---------- */
+const K = 'wiom-ayo-v1';
+const load = () => { try { return JSON.parse(localStorage.getItem(K)) || {}; } catch { return {}; } };
+const save = () => { try { localStorage.setItem(K, JSON.stringify(S)); } catch {} };
+let S = params.get('reset') === '1' ? {} : load();
+S.packs = S.packs || {}; S.eps = S.eps || {};
+if (params.get('lang') === 'en') S.lang = 'en';
+const now = () => Date.now();
+const packLeft = pid => Math.max(0, (S.packs[pid] || 0) - now());
+const epLeft = eid => Math.max(0, ((S.eps[eid] || {}).until || 0) - now());
+const owns = (pid, eid) => packLeft(pid) > 0 || epLeft(eid) > 0;
+/* singles already bought inside this pack, still live -> credited toward the pack */
+const credit = pid => packOf(pid).episodes.reduce((a, e) => a + (epLeft(e.episodeId) > 0 ? (S.eps[e.episodeId].paise || 0) : 0), 0);
+const packPrice = pid => Math.max(0, P.packPaise - credit(pid));
+const fmt = ms => { const m = Math.ceil(ms / 60000), h = Math.floor(m / 60);
+  return h > 0 ? h + ' घं. ' + (m % 60) + ' मि.' : m + ' मिनट'; };
+const mmss = s => Math.floor(s / 60) + ':' + String(Math.round(s % 60)).padStart(2, '0');
+const art = p => p.art[S.lang === 'en' ? 'en' : 'hi'];
+
+/* ---------- live TV underneath (identical to store.html) ---------- */
+(function initTV(){
+  const v = $('tv'), fb = $('tv-fallback');
+  const ok = () => { fb.style.display = 'none'; };
+  if (window.Hls && Hls.isSupported()) {
+    const hls = new Hls({ maxBufferLength: 10 });
+    hls.loadSource(HLS_URL); hls.attachMedia(v);
+    hls.on(Hls.Events.MANIFEST_PARSED, () => v.play().then(ok).catch(()=>{}));
+    hls.on(Hls.Events.ERROR, (e,d) => { if (d.fatal) fb.style.display = 'block'; });
+  } else if (v.canPlayType('application/vnd.apple.mpegurl')) {
+    v.src = HLS_URL; v.addEventListener('loadeddata', ok); v.play().catch(()=>{});
+  }
+  $('tv-sound').onclick = () => {
+    v.muted = !v.muted;
+    $('tv-sound').innerHTML = v.muted ? '&#128263;' : '&#128266;';
+    if (!v.muted) v.play().catch(()=>{});
+  };
+})();
+
+/* ---------- channels ---------- */
+const CH = [ {ch:2, name:'Dangal TV'}, {ch:22, name:'अयोध्यात्रा', ayo:true} ];
+let ci = 0;
+function setMode(m){ $('app').className = 'mode-' + m; }
+function setBanner(){ const c = CH[ci];
+  $('banner').querySelector('.cn').textContent = c.ch; $('banner').querySelector('.nm').textContent = c.name; }
+function dismissCoach(){ const c = $('coach'); if (c) c.style.display = 'none'; }
+let toastT = null;
+function toast(msg, ms){ const t = $('toast'); t.textContent = msg; t.classList.add('on');
+  clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove('on'), ms || 3600); }
+function crt(num, name, cb){ const c = $('crt');
+  c.querySelector('.num').textContent = num; c.querySelector('.nm').textContent = name;
+  c.classList.remove('hide'); setTimeout(() => { c.classList.add('hide'); cb && cb(); }, 750); }
+function tuneChannel(dir){
+  dismissCoach();
+  ci = (ci + dir + CH.length) % CH.length;
+  const c = CH[ci]; setBanner();
+  crt(c.ch, c.name, () => { if (c.ayo) { ev('ay_channel_tune'); openEp(PACKS[0].packId, 0, 'channel'); } });
+}
+$('ch-up').onclick = () => tuneChannel(1);
+$('ch-dn').onclick = () => tuneChannel(-1);
+
+/* ---------- store (home after first visit) ---------- */
+function goStore(){
+  closePlayer(true);
+  setMode('store'); ci = 0; setBanner();
+  $('tv').play().catch(()=>{});
+  renderStore();
+  if (!S.storeSeen){ S.storeSeen = 1; save();
+    setTimeout(() => toast('यह है अयोध्यात्रा का स्टोर 👇 किसी भी पैक पर टैप करें', 4500), 400); }
+  ev('ay_shelf_view');
+}
+function tagFor(p){
+  const left = packLeft(p.packId);
+  if (left > 0) return `<span class="tg own${left < 3600e3 ? ' amb' : ''}">✓ ${fmt(left)} बचे</span>`;
+  const c = credit(p.packId);
+  if (c > 0) return `<span class="tg">पैक पूरा करें · ${rs(packPrice(p.packId))}</span>`;
+  return `<span class="tg">3 वीडियो · ${rs(P.packPaise)}</span>`;
+}
+function renderStore(){
+  const out = [];
+  const running = PACKS.filter(p => packLeft(p.packId) > 0 || p.episodes.some(e => epLeft(e.episodeId) > 0));
+  if (running.length){
+    out.push(`<div><div class="sech"><span class="t on">चालू</span><span class="hint">24 घंटे में जितनी बार चाहें</span></div><div class="runs">` +
+      running.map(p => {
+        const pl = packLeft(p.packId);
+        const left = pl > 0 ? pl : Math.max(...p.episodes.map(e => epLeft(e.episodeId)));
+        const what = pl > 0 ? 'पूरा पैक · 3 वीडियो' : p.episodes.filter(e => epLeft(e.episodeId) > 0).length + ' वीडियो';
+        const amb = left < 3600e3, pct = Math.max(2, Math.round(left / WINDOW * 100));
+        return `<div class="runcard ${amb?'amb':''}"><img class="thumb" src="${art(p)}" alt="">
+          <div class="ri"><div class="rn">${p.title}</div><div style="font-size:10.5px;color:#C9C3D4">${what}</div>
+            <div class="rt" data-left="${p.packId}">${fmt(left)} बचे</div>
+            <div class="mini"><i class="${amb?'amb':''}" style="width:${pct}%"></i></div></div>
+          <button class="open" data-pack="${p.packId}">देखें</button></div>`;
+      }).join('') + `</div></div>`);
+  }
+  out.push(`<div>
+    <div class="sellerhd"><div class="slogo">अ</div>
+      <div class="ai"><div class="an">अयोध्यात्रा</div><div class="ad">रामायण · कृष्ण लीला · भक्ति कथाएँ — ${PACKS.length} पैक</div></div>
+      <div class="lang"><button data-lang="hi" class="${S.lang==='en'?'':'on'}">हिं</button><button data-lang="en" class="${S.lang==='en'?'on':''}">EN</button></div></div>
+    <div class="pricebar">
+      <div class="pk"><b>${rs(P.packPaise)}</b>3 वीडियो का पैक · 24 घंटे, जितनी बार चाहें</div>
+      <div><b>${rs(P.singlePaise)}</b>सिर्फ़ एक वीडियो</div></div></div>`);
+  out.push(`<div><div class="sech"><span class="t">सारे पैक</span><span class="hint">हर वीडियो के 10 सेकंड मुफ़्त</span></div>
+    <div class="pgrid">${PACKS.map(p => `<button class="pcard" data-pack="${p.packId}">
+      <img src="${art(p)}" alt="${p.title}" loading="lazy">${tagFor(p)}</button>`).join('')}</div></div>`);
+  $('store').innerHTML = out.join('');
+}
+$('store').addEventListener('click', e => {
+  const l = e.target.closest('[data-lang]');
+  if (l){ S.lang = l.dataset.lang; save(); renderStore(); ev('ay_lang', {lang:S.lang}); return; }
+  const b = e.target.closest('[data-pack]');
+  if (b) openPack(b.dataset.pack);
+});
+setInterval(() => {
+  document.querySelectorAll('[data-left]').forEach(el => {
+    const p = packOf(el.dataset.left), pl = packLeft(p.packId);
+    const left = pl > 0 ? pl : Math.max(0, ...p.episodes.map(e => epLeft(e.episodeId)));
+    if (left <= 0) { renderStore(); ev('ay_window_expired', {packId:p.packId}); return; }
+    el.textContent = fmt(left) + ' बचे';
+  });
+  if (cur) updatePill();
+}, 1000);
+
+/* ---------- pack page ---------- */
+function openPack(pid){
+  const p = packOf(pid); closePack();
+  const owned = packLeft(pid) > 0, c = credit(pid);
+  const d = document.createElement('div'); d.className = 'ppanel'; d.id = 'pack';
+  d.innerHTML = `<div class="hero"><img src="${art(p)}" alt=""><button class="x" id="pclose" aria-label="बंद करें">‹</button></div>
+    <div class="body">
+      <div class="kick">अयोध्यात्रा · 3 वीडियो का पैक</div>
+      <h2>${p.title}</h2><div class="ds">${p.description}</div>
+      ${owned ? `<div class="ownbar">✓ पैक चालू — ${fmt(packLeft(pid))} तक जितनी बार चाहें देखें</div>`
+              : `<button class="bigbuy" id="packbuy"><span>${c ? 'पैक पूरा करें' : 'पूरा पैक लें'}<small>3 वीडियो · 24 घंटे, जितनी बार चाहें · GST सहित</small></span><span class="pp">${rs(packPrice(pid))}</span></button>`}
+      ${p.episodes.map((e, i) => {
+        const st = e.unavailable ? 'वीडियो जल्द आ रहा है' : owns(pid, e.episodeId) ? '✓ अनलॉक्ड — चलाएँ' : `🔒 10 सेकंड मुफ़्त · फिर ${rs(P.singlePaise)}`;
+        return `<button class="eprow${e.unavailable?' off':''}" data-ep="${i}" ${e.unavailable?'disabled':''}>
+          <div class="th"><img src="${e.poster}" alt=""><span class="du">${mmss(e.durationSec)}</span></div>
+          <div class="ei"><div class="en">वीडियो ${e.order}</div><div class="et">${e.title}</div>
+            <div class="es ${!e.unavailable && owns(pid, e.episodeId) ? 'own' : ''}">${st}</div></div></button>`; }).join('')}
+    </div>`;
+  document.body.appendChild(d);
+  $('pclose').onclick = () => { closePack(); goStore(); };
+  const pb = $('packbuy'); if (pb) pb.onclick = () => openWall(pid, null, 'pack_page');
+  d.querySelectorAll('[data-ep]').forEach(b => b.onclick = () => { closePack(); openEp(pid, +b.dataset.ep, 'pack_page'); });
+  ev('ay_pack_open', {packId:pid});
+}
+function closePack(){ const d = $('pack'); if (d) d.remove(); }
+
+/* ---------- player ---------- */
+let cur = null, hls = null, forced = false, walled = false;
+const pv = $('pv');
+function attach(url){
+  if (hls){ hls.destroy(); hls = null; }
+  if (window.Hls && Hls.isSupported()){
+    hls = new Hls({ startLevel: 0, capLevelToPlayerSize: true, maxBufferLength: 12 });
+    hls.loadSource(url); hls.attachMedia(pv);
+  } else pv.src = url;
+}
+function openEp(pid, idx, from){
+  const p = packOf(pid), e = p.episodes[idx];
+  if (e.unavailable){ const n = nextPlayable(pid, idx); if (n >= 0) return openEp(pid, n, from); return goStore(); }
+  closePack(); closeSheet();
+  cur = { pid, idx }; walled = false;
+  $('promo').classList.remove('hide'); pv.classList.remove('frozen');
+  $('chip').querySelector('.nm').textContent = e.title;
+  $('pprog').firstElementChild.style.width = '0%';
+  renderMark(); updateChip(); updatePill();
+  $('tv').pause();
+  pv.poster = e.poster;
+  attach(e.hlsUrl);
+  pv.currentTime = 0;
+  pv.muted = false;
+  pv.play().catch(() => { pv.muted = true; forced = true;
+    pv.play().then(() => $('punmute').classList.remove('hide')).catch(()=>{}); });
+  ev('ay_play_start', {packId:pid, episodeId:e.episodeId, owned:owns(pid, e.episodeId), from});
+}
+function closePlayer(silent){
+  if (!cur && $('promo').classList.contains('hide')) return;
+  try { pv.pause(); } catch {}
+  if (hls){ hls.destroy(); hls = null; }
+  pv.removeAttribute('src'); pv.removeAttribute('poster'); try { pv.load(); } catch {}
+  $('promo').classList.add('hide'); pv.classList.remove('frozen'); $('punmute').classList.add('hide');
+  closeSheet(); cur = null;
+}
+function nextPlayable(pid, idx){ const eps = packOf(pid).episodes;
+  for (let i = idx + 1; i < eps.length; i++) if (!eps[i].unavailable) return i; return -1; }
+const curEp = () => cur && packOf(cur.pid).episodes[cur.idx];
+const curOwned = () => cur && owns(cur.pid, curEp().episodeId);
+function renderMark(){
+  const bar = $('pprog'); bar.querySelectorAll('.lockmark').forEach(m => m.remove());
+  const e = curEp(); if (!e || curOwned()) return;
+  const m = document.createElement('span'); m.className = 'lockmark';
+  m.style.left = (PREVIEW / e.durationSec * 100) + '%'; bar.appendChild(m);
+}
+function updateChip(){
+  const ct = $('chip').querySelector('.ct'), own = curOwned();
+  ct.textContent = own ? 'अनलॉक्ड' : 'मुफ़्त झलक'; ct.className = 'ct' + (own ? ' unl' : '');
+  $('free').classList.toggle('hide', !!own);
+}
+function updatePill(){
+  const p = $('pill'); if (!cur) return;
+  const pl = packLeft(cur.pid), el = epLeft(curEp().episodeId), left = Math.max(pl, el);
+  if (left > 0){ p.textContent = fmt(left); p.className = left < 3600e3 ? 'amb' : ''; }
+  else { p.textContent = `पैक ${rs(packPrice(cur.pid))}`; p.className = 'buy2'; }
+}
+pv.addEventListener('timeupdate', () => {
+  const e = curEp(); if (!e) return;
+  const dur = pv.duration || e.durationSec;
+  $('pprog').firstElementChild.style.width = (pv.currentTime / dur * 100) + '%';
+  if (curOwned()) return;
+  const rem = Math.max(0, PREVIEW - pv.currentTime);
+  $('freetx').textContent = rem > 0 ? `${Math.ceil(rem)} सेकंड मुफ़्त` : 'मुफ़्त झलक ख़त्म';
+  $('free').style.setProperty('--p', Math.min(100, pv.currentTime / PREVIEW * 100) + '%');
+  if (pv.currentTime >= PREVIEW && !walled){
+    walled = true; pv.pause(); pv.currentTime = PREVIEW;
+    pv.classList.add('frozen');
+    openWall(cur.pid, cur.idx, 'preview_end');
+  }
+});
+/* no getting past the wall by seeking */
+pv.addEventListener('seeking', () => { if (cur && !curOwned() && pv.currentTime > PREVIEW + .05) pv.currentTime = PREVIEW; });
+pv.addEventListener('play', () => { if (cur && !curOwned() && pv.currentTime >= PREVIEW){ pv.pause(); if (!$('sheet').classList.contains('up')) openWall(cur.pid, cur.idx, 'replay_locked'); } });
+pv.addEventListener('ended', () => {
+  if (!cur) return;
+  const n = nextPlayable(cur.pid, cur.idx);
+  if (n >= 0){ ev('ay_autoplay_next', {packId:cur.pid}); toast('अगला वीडियो ▶', 1600); openEp(cur.pid, n, 'autoplay'); }
+  else { const pid = cur.pid; ev('ay_pack_finished', {packId:pid}); goStore(); openPack(pid); }
+});
+$('pback').onclick = goStore;
+$('punmute').onclick = () => { pv.muted = false; forced = false; $('punmute').classList.add('hide'); };
+document.addEventListener('click', e => {
+  if (!forced || pv.muted === false) return;
+  if (e.target.closest('#punmute, #sheet, #demo')) return;
+  pv.muted = false; forced = false; $('punmute').classList.add('hide');
+}, true);
+
+/* ---------- the wall: pack ₹14 (default) or this video ₹6 ---------- */
+let W = null;                         // {pid, idx, choice}
+function openWall(pid, idx, from){
+  const p = packOf(pid), e = idx == null ? null : p.episodes[idx];
+  const c = credit(pid), pp = packPrice(pid);
+  W = { pid, idx, choice: 'pack' };
+  $('sh-title').textContent = e ? 'आगे देखने के लिए चुनें' : 'पूरा पैक लें';
+  $('sh-sub').innerHTML = `<b>${p.title}</b>` + (e ? ` · वीडियो ${e.order}` : '');
+  const packRow = `<button class="opt sel" data-o="pack"><span class="rd"></span><div class="oi">
+      <div class="ol">${c ? 'पैक पूरा करें' : 'पूरा पैक · 3 वीडियो'} <span class="save">${c ? rs(c) + ' जुड़ गए' : rs(P.singlePaise * 3 - P.packPaise) + ' बचत'}</span></div>
+      <div class="os">24 घंटे तक, जितनी बार चाहें</div></div>
+      <div class="op">${c ? `<s>${rs(P.packPaise)}</s>` : ''}${rs(pp)}</div></button>`;
+  const oneRow = e ? `<button class="opt" data-o="single"><span class="rd"></span><div class="oi">
+      <div class="ol">सिर्फ़ यह वीडियो</div><div class="os">वीडियो ${e.order} · 24 घंटे</div></div>
+      <div class="op">${rs(P.singlePaise)}</div></button>` : '';
+  $('opts').innerHTML = packRow + oneRow;
+  setPayLabel();
+  $('sheet').classList.add('up'); $('scrim').classList.add('on');
+  ev('ay_wall_shown', {packId:pid, episodeId:e && e.episodeId, from, packPricePaise:pp, creditPaise:c});
+}
+function wallPrice(){ return W.choice === 'pack' ? packPrice(W.pid) : P.singlePaise; }
+function setPayLabel(){ $('paybtn').querySelector('.lbl').textContent = `UPI से ${rs(wallPrice())} दें`; }
+$('opts').addEventListener('click', e => {
+  const o = e.target.closest('[data-o]'); if (!o || !W) return;
+  W.choice = o.dataset.o;
+  $('opts').querySelectorAll('.opt').forEach(x => x.classList.toggle('sel', x === o));
+  setPayLabel(); ev('ay_option_pick', {choice:W.choice, packId:W.pid});
+});
+function closeSheet(){ $('sheet').classList.remove('up'); $('scrim').classList.remove('on'); }
+$('skipbtn').onclick = () => { if (!W) return closeSheet(); ev('ay_wall_dismiss', {packId:W.pid}); closeSheet();
+  if (cur){ const pid = cur.pid; goStore(); openPack(pid); } };
+$('scrim').onclick = () => $('skipbtn').onclick();
+
+/* ---------- mock UPI ---------- */
+$('paybtn').onclick = () => {
+  const b = $('paybtn'), w = W, paise = wallPrice();
+  ev('ay_pay_click', {choice:w.choice, packId:w.pid, paise});
+  b.classList.add('busy');
+  b.querySelector('.lbl').innerHTML = '<span class="spin"></span> UPI ऐप खुल रहा है…';
+  setTimeout(() => { b.querySelector('.lbl').textContent = 'पेमेंट कन्फ़र्म हो रहा है…'; }, 900);
+  setTimeout(() => {
+    const until = now() + WINDOW, p = packOf(w.pid);
+    if (w.choice === 'pack'){ S.packs[w.pid] = until;
+      p.episodes.forEach(e => { delete S.eps[e.episodeId]; }); }
+    else S.eps[p.episodes[w.idx].episodeId] = { until, paise };
+    save(); b.classList.remove('busy'); closeSheet();
+    ev('ay_pay_success', {choice:w.choice, packId:w.pid, paise});
+    showUnlocked(w, paise);
+  }, 2100);
+};
+function showUnlocked(w, paise){
+  const p = packOf(w.pid);
+  const d = document.createElement('div'); d.className = 'center'; d.id = 'succ';
+  d.innerHTML = `<div class="tick">✓</div>
+    <div class="t">${w.choice === 'pack' ? 'पूरा पैक अनलॉक' : 'वीडियो अनलॉक'} — ${rs(paise)}</div>
+    <div class="s">${w.choice === 'pack' ? `<b>${p.title}</b> के तीनों वीडियो` : 'यह वीडियो'} अगले 24 घंटे तक, जितनी बार चाहें</div>
+    <button class="cta" id="keepwatch">देखते रहिए ▶</button>`;
+  document.body.appendChild(d);
+  const go = () => { if (!$('succ')) return; d.remove();
+    if (cur && w.idx != null && cur.idx === w.idx){ walled = false; pv.classList.remove('frozen');
+      renderMark(); updateChip(); updatePill(); pv.currentTime = PREVIEW; pv.play().catch(()=>{}); }
+    else openEp(w.pid, w.idx == null ? 0 : w.idx, 'after_pay'); };
+  $('keepwatch').onclick = go;
+}
+
+/* ---------- help ---------- */
+function openHelp(){
+  const d = document.createElement('div'); d.className = 'panel';
+  d.innerHTML = `<h2>मदद <button id="hclose">✕</button></h2>
+    <div class="qa"><div class="q">यह क्या है?</div><div class="a">अयोध्यात्रा की छोटी भक्ति कहानियाँ — हर वीडियो लगभग 1 मिनट। हर वीडियो के पहले 10 सेकंड मुफ़्त।</div></div>
+    <div class="qa"><div class="q">${rs(P.packPaise)} में क्या मिलेगा?</div><div class="a">एक पैक के तीनों वीडियो, <b>24 घंटे तक जितनी बार चाहें</b>।</div></div>
+    <div class="qa"><div class="q">${rs(P.singlePaise)} में क्या मिलेगा?</div><div class="a">सिर्फ़ वही एक वीडियो, 24 घंटे तक। बाद में पैक लें तो ${rs(P.singlePaise)} पैक की कीमत में जुड़ जाएँगे।</div></div>
+    <div class="qa"><div class="q">GST?</div><div class="a">सभी कीमतें GST सहित हैं। <b>कोई ऑटो-रिन्यूअल नहीं।</b></div></div>
+    <div class="qa"><div class="q">पैसे कट गए पर नहीं चला?</div><div class="a">घबराएँ नहीं — नीचे WhatsApp करें, पैसे वापस या वीडियो चालू।</div></div>
+    <div class="wa">💬 WhatsApp: 90000 00000 — 10 मिनट में जवाब</div>
+    <p style="font-size:11px;color:#4B4358;margin-top:20px;line-height:1.5">यह एक डेमो है — कोई असली पेमेंट नहीं होता।</p>`;
+  document.body.appendChild(d); $('hclose').onclick = () => d.remove();
+}
+$('helpbtn').onclick = openHelp; $('helpbtn2').onclick = openHelp; $('trusthelp').onclick = openHelp;
+
+/* ---------- demo controls ---------- */
+$('demo').addEventListener('click', e => {
+  const b = e.target.closest('[data-d]'); if (!b) return;
+  const d = b.dataset.d;
+  if (d === 'wall'){
+    if (!cur){ toast('पहले चैनल 22 पर जाएँ या कोई वीडियो चलाएँ'); return; }
+    if (curOwned()){ if (pv.duration) pv.currentTime = Math.max(0, pv.duration - 3); }
+    else { pv.currentTime = PREVIEW - 1.5; pv.play().catch(()=>{}); }
+  }
+  if (d === 'low'){ const t = now() + 2 * 60e3;
+    Object.keys(S.packs).forEach(k => { if (S.packs[k] > now()) S.packs[k] = t; });
+    Object.values(S.eps).forEach(v => { if (v.until > now()) v.until = t; });
+    save(); renderStore(); toast('चालू पैक में अब 2 मिनट बचे'); }
+  if (d === 'expire'){ S.packs = {}; S.eps = {}; save(); renderStore(); if (cur){ renderMark(); updateChip(); updatePill(); }
+    toast('समय ख़त्म — अब फिर से 10 सेकंड पर रुकेगा'); ev('ay_window_expired', {all:true}); }
+  if (d === 'reset'){
+    S = {packs:{}, eps:{}}; save();
+    ['succ','pack'].forEach(i => { const el = $(i); if (el) el.remove(); });
+    closePlayer(true); setMode('live'); ci = 0; setBanner();
+    const c = $('coach'); if (c) c.style.display = '';
+    $('tv').play().catch(()=>{}); renderStore();
+  }
+});
+
+/* ---------- boot ---------- */
+setMode('live'); ci = 0; setBanner(); renderStore();
+if (params.get('start') === 'store') goStore();
+
+/* ══ UI guide — same scaffolding as store.html, wrapped around the lifecycle ══ */
+(function(){
+  var spot = document.createElement('div'); spot.id = 'uig-spot'; spot.style.display = 'none';
+  var box  = document.createElement('div'); box.id  = 'uig';      box.style.display  = 'none';
+  box.innerHTML = '<div class="lb">UI guide</div><div class="tx"></div>';
+  var btn  = document.createElement('button'); btn.id = 'uig-btn'; btn.textContent = '◆ UI guide';
+  document.body.appendChild(spot); document.body.appendChild(box); document.body.appendChild(btn);
+
+  var on = true, last = null;
+  btn.onclick = function(){
+    on = !on;
+    document.body.classList.toggle('uig-off', !on);
+    btn.classList.toggle('off', !on);
+    if (on && last) guide(last.sel, last.txt);
+  };
+
+  /* place the ring + callout over whatever must be pressed next */
+  function guide(sel, txt, delay){
+    last = {sel:sel, txt:txt};
+    setTimeout(function(){
+      if (!on) return;
+      box.querySelector('.tx').innerHTML = txt;
+      box.style.display = 'block';
+      var el = sel ? document.querySelector(sel) : null;
+      var vis = el && el.offsetParent !== null && el.getBoundingClientRect().width > 0;
+      var W = innerWidth, H = innerHeight;
+      if (vis){
+        var r = el.getBoundingClientRect(), pad = 6;
+        /* first appearance: land on the target instead of sliding in from the corner */
+        var fresh = spot.style.display === 'none';
+        if (fresh){ spot.style.transition = 'none'; box.style.transition = 'none'; }
+        spot.style.display = 'block';
+        spot.style.left = (r.left - pad) + 'px';  spot.style.top = (r.top - pad) + 'px';
+        spot.style.width = (r.width + pad*2) + 'px'; spot.style.height = (r.height + pad*2) + 'px';
+        var bw = box.offsetWidth, bh = box.offsetHeight;
+        box.style.left = Math.max(10, Math.min(r.left - 8, W - bw - 10)) + 'px';
+        var below = r.bottom + 14 + bh < H - 10;
+        /* never park the callout on top of another button the viewer can press */
+        var bl = parseFloat(box.style.left) || 10;
+        var covers = function(top){
+          var c = {l:bl, r:bl+bw, t:top, b:top+bh};
+          return [].some.call(document.querySelectorAll('button,.cta,.alt,.install,.open'), function(o){
+            if (o === el || o.offsetParent === null) return false;
+            var q = o.getBoundingClientRect();
+            if (!q.width || !q.height) return false;
+            return c.l < q.right && c.r > q.left && c.t < q.bottom && c.b > q.top;
+          });
+        };
+        var topBelow = r.bottom + 14, topAbove = Math.max(10, r.top - bh - 14);
+        if (below && covers(topBelow) && r.top - bh - 14 > 10 && !covers(topAbove)) below = false;
+        box.style.top = (below ? topBelow : topAbove) + 'px';
+        if (fresh) requestAnimationFrame(function(){ spot.style.transition = ''; box.style.transition = ''; });
+      } else {
+        spot.style.display = 'none';
+        box.style.left = '10px';
+        box.style.top  = Math.max(10, H - box.offsetHeight - 96) + 'px';
+      }
+    }, delay || 60);
+    /* Screens animate in AND carry <img> (app logos, posters) that reflow the centred
+       column when they decode — measuring once leaves the ring behind. Settle again on a
+       timer, and again whenever a still-loading image in this screen finishes. */
+    if (delay !== 0){
+      setTimeout(function(){ if (on && last && last.sel === sel) guide(sel, txt, 0); }, (delay || 60) + 450);
+      setTimeout(function(){
+        var el2 = sel ? document.querySelector(sel) : null;
+        var scope = (el2 && el2.closest('#succ,#ps,#dv,#app')) || document;
+        scope.querySelectorAll('img').forEach(function(im){
+          if (!im.complete) im.addEventListener('load', function(){
+            if (on && last && last.sel === sel) guide(sel, txt, 0);
+          }, {once:true});
+        });
+      }, (delay || 60) + 20);
+    }
+  }
+  function clearGuide(){ last = null; spot.style.display = 'none'; box.style.display = 'none'; }
+  addEventListener('resize', function(){ if (last) guide(last.sel, last.txt, 0); });
+
+  var _tune = tuneChannel;
+  tuneChannel = function(d){ clearGuide(); _tune(d);
+    guide('#free', 'Channel 22 plays Ayodhyatra. <b>Every locked video is free for 10 seconds</b> — the counter shows how much is left.', 1300); };
+  var _openWall = openWall;
+  openWall = function(pid, idx, from){ _openWall(pid, idx, from);
+    guide('#paybtn', idx == null
+      ? 'Pack bought from the pack page. <b>Press pay</b> to unlock all three.'
+      : 'Paused at 0:10. <b>Pack ₹14 is preselected</b>; ₹6 buys just this video. Press pay.', 520); };
+  var _closeSheet = closeSheet;
+  closeSheet = function(){ _closeSheet(); clearGuide(); };
+  var _showUnlocked = showUnlocked;
+  showUnlocked = function(w, p){ _showUnlocked(w, p);
+    guide('#keepwatch', w.choice === 'pack'
+      ? 'Paid. <b>Playback resumes at 0:10</b>, then the next two videos roll on with no wall for 24 hours.'
+      : 'Paid ₹6. This video is unlocked; <b>video 2 will wall again</b>, and the pack now costs only ₹8.', 420); };
+  var _goStore = goStore;
+  goStore = function(){ _goStore();
+    guide('#store .pcard', 'The store is home now. <b>20 packs</b>, Hindi art by default (EN toggle above). Tap any pack.', 600); };
+  var _openPack = openPack;
+  openPack = function(pid){ _openPack(pid); clearGuide(); };
+  guide('#ch-up', 'Start here. <b>Press ▲</b> to change channel and reach Ayodhyatra.', 900);
+})();
+</script>
+</body>
+</html>
