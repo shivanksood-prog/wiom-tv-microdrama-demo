@@ -367,6 +367,34 @@
   .opt .op s{font-size:12px;color:#665E75;font-weight:700;margin-right:4px}
   .save{font-size:9.5px;font-weight:800;color:#7BE8B0;background:rgba(0,128,67,.25);border-radius:999px;padding:2px 7px}
   .sheet{padding-bottom:calc(84px + env(safe-area-inset-bottom,0px))}
+
+  /* my packs: entry points + panel */
+  .mybtn{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:800;color:#FFB2E4;
+    border:1px solid rgba(255,178,228,.35);border-radius:999px;padding:6px 11px;background:rgba(217,0,141,.12);flex:0 0 auto}
+  .mybtn .bd{min-width:17px;height:17px;border-radius:9px;background:#D9008D;color:#fff;font-size:10px;display:flex;align-items:center;justify-content:center;padding:0 4px}
+  .mybtn .bd:empty{display:none}
+  #mypk-live{position:absolute;top:calc(8px + env(safe-area-inset-top,0px));right:52px;z-index:3;background:rgba(0,0,0,.55)}
+  #app.mode-store #mypk-live{display:none}
+  #pill{cursor:pointer}
+  .sech .more{font-size:11px;font-weight:800;color:#FFB2E4}
+  .mp-sum{display:flex;gap:8px;margin-bottom:16px}
+  .mp-sum div{flex:1;border-radius:12px;padding:10px 12px;background:rgba(255,255,255,.05);font-size:10.5px;color:#A7A1B2}
+  .mp-sum b{display:block;font-size:18px;color:#FAF9FC;font-weight:900;font-variant-numeric:tabular-nums}
+  .mp-sec{font-size:10.5px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#6E6579;margin:6px 0 8px}
+  .mp-sec.on{color:#3DC98A}
+  .mp-runs{display:flex;flex-direction:column;gap:8px;margin-bottom:18px}
+  .hrow{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.07)}
+  .hrow img{width:30px;height:53px;border-radius:6px;object-fit:cover;flex:0 0 auto}
+  .hrow .hi2{flex:1;min-width:0}
+  .hrow .hn{font-size:12.5px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .hrow .hd{font-size:10.5px;color:#A7A1B2;margin-top:2px}
+  .st{font-size:9.5px;font-weight:800;border-radius:999px;padding:2px 7px;white-space:nowrap}
+  .st.on{background:rgba(0,128,67,.25);color:#7BE8B0}
+  .st.off{background:rgba(255,255,255,.08);color:#A7A1B2}
+  .st.mg{background:rgba(109,23,206,.25);color:#D9C6FF}
+  .hrow .again{background:rgba(255,255,255,.1);border-radius:9px;padding:8px 10px;font-size:11px;font-weight:800;flex:0 0 auto}
+  .mp-empty{text-align:center;padding:40px 10px;color:#A7A1B2;font-size:13px;line-height:1.6}
+  .mp-empty .cta{margin:16px auto 0;display:inline-flex;background:#D9008D;border-radius:13px;padding:14px 22px;font-size:14px;font-weight:800;color:#fff}
 </style>
 </head>
 <body>
@@ -377,13 +405,14 @@
     <div id="tv-fallback" style="background-image:url(data:image/jpeg;base64,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)"></div>
     <div class="lv"><i></i>LIVE</div>
     <button id="tv-sound" aria-label="आवाज़">&#128263;</button>
+    <button class="mybtn" id="mypk-live">🎟 मेरे पैक <span class="bd"></span></button>
     <div class="redline"></div>
     <div id="banner"><span class="cn">2</span><span class="nm">Dangal TV</span><button class="hb" id="helpbtn2">?</button></div>
     <div id="remote"><button id="ch-up" aria-label="अगला चैनल">▲</button><span class="lbl">CH</span><button id="ch-dn" aria-label="पिछला चैनल">▼</button></div>
     <div id="coach">भक्ति कहानियों के लिए चैनल बदलें →</div>
   </div>
   <div id="chbar"><span class="cn">2</span><span class="nm">Dangal TV</span>
-    <button id="helpbtn" aria-label="मदद">?</button><span class="all">सभी चैनल ›</span></div>
+    <button id="helpbtn" aria-label="मदद">?</button><button class="mybtn" id="mypk">🎟 मेरे पैक <span class="bd"></span></button></div>
   <div id="store"></div>
 </div>
 
@@ -515,7 +544,7 @@ function renderStore(){
   const out = [];
   const running = PACKS.filter(p => packLeft(p.packId) > 0 || p.episodes.some(e => epLeft(e.episodeId) > 0));
   if (running.length){
-    out.push(`<div><div class="sech"><span class="t on">चालू</span><span class="hint">24 घंटे में जितनी बार चाहें</span></div><div class="runs">` +
+    out.push(`<div><div class="sech"><span class="t on">चालू</span><button class="more" data-mine="1">मेरे पैक · सब देखें ›</button></div><div class="runs">` +
       running.map(p => {
         const pl = packLeft(p.packId);
         const left = pl > 0 ? pl : Math.max(...p.episodes.map(e => epLeft(e.episodeId)));
@@ -541,6 +570,7 @@ function renderStore(){
   $('store').innerHTML = out.join('');
 }
 $('store').addEventListener('click', e => {
+  if (e.target.closest('[data-mine]')) return openMyPacks();
   const l = e.target.closest('[data-lang]');
   if (l){ S.lang = l.dataset.lang; save(); renderStore(); ev('ay_lang', {lang:S.lang}); return; }
   const b = e.target.closest('[data-pack]');
@@ -712,9 +742,18 @@ $('paybtn').onclick = () => {
   setTimeout(() => { b.querySelector('.lbl').textContent = 'पेमेंट कन्फ़र्म हो रहा है…'; }, 900);
   setTimeout(() => {
     const until = now() + WINDOW, p = packOf(w.pid);
-    if (w.choice === 'pack'){ S.packs[w.pid] = until;
-      p.episodes.forEach(e => { delete S.eps[e.episodeId]; }); }
-    else S.eps[p.episodes[w.idx].episodeId] = { until, paise };
+    S.log = S.log || [];
+    if (w.choice === 'pack'){
+      /* singles still live in this pack ride on the pack from here */
+      S.log.forEach(r => { if (r.pid === w.pid && r.kind === 'single' && epLeft(r.eid) > 0) r.merged = 1; });
+      S.packs[w.pid] = until;
+      p.episodes.forEach(e => { delete S.eps[e.episodeId]; });
+      S.log.unshift({ pid: w.pid, kind: paise < P.packPaise ? 'topup' : 'pack', paise, at: now() });
+    } else {
+      const eid = p.episodes[w.idx].episodeId;
+      S.eps[eid] = { until, paise };
+      S.log.unshift({ pid: w.pid, eid, kind: 'single', paise, at: now() });
+    }
     save(); b.classList.remove('busy'); closeSheet();
     ev('ay_pay_success', {choice:w.choice, packId:w.pid, paise});
     showUnlocked(w, paise);
@@ -726,14 +765,96 @@ function showUnlocked(w, paise){
   d.innerHTML = `<div class="tick">✓</div>
     <div class="t">${w.choice === 'pack' ? 'पूरा पैक अनलॉक' : 'वीडियो अनलॉक'} — ${rs(paise)}</div>
     <div class="s">${w.choice === 'pack' ? `<b>${p.title}</b> के तीनों वीडियो` : 'यह वीडियो'} अगले 24 घंटे तक, जितनी बार चाहें</div>
-    <button class="cta" id="keepwatch">देखते रहिए ▶</button>`;
+    <button class="cta" id="keepwatch">देखते रहिए ▶</button>
+    <button class="alt" id="seemine">यह ख़रीदारी 🎟 मेरे पैक में रहेगी ›</button>`;
   document.body.appendChild(d);
+  $('seemine').onclick = () => { d.remove(); openMyPacks(); };
+  refreshBadges();
   const go = () => { if (!$('succ')) return; d.remove();
     if (cur && w.idx != null && cur.idx === w.idx){ walled = false; pv.classList.remove('frozen');
       renderMark(); updateChip(); updatePill(); pv.currentTime = PREVIEW; pv.play().catch(()=>{}); }
     else openEp(w.pid, w.idx == null ? 0 : w.idx, 'after_pay'); };
   $('keepwatch').onclick = go;
 }
+
+/* ---------- my packs: everything bought, live or finished ---------- */
+function activeGroups(){
+  return PACKS.map(p => {
+    const pl = packLeft(p.packId);
+    const eps = p.episodes.filter(e => pl > 0 ? !e.unavailable : epLeft(e.episodeId) > 0);
+    const left = pl > 0 ? pl : Math.max(0, ...eps.map(e => epLeft(e.episodeId)));
+    return { p, pack: pl > 0, eps, left };
+  }).filter(g => g.left > 0).sort((a, b) => a.left - b.left);
+}
+function refreshBadges(){
+  const n = activeGroups().length;
+  document.querySelectorAll('.mybtn .bd').forEach(b => b.textContent = n ? n : '');
+}
+function recStatus(r){
+  if (r.kind === 'single'){
+    if (epLeft(r.eid) > 0) return ['on', 'चालू · ' + fmt(epLeft(r.eid))];
+    if (r.merged) return ['mg', packLeft(r.pid) > 0 ? 'पैक में जुड़ गया' : 'पैक में जुड़ा था'];
+    return ['off', 'ख़त्म'];
+  }
+  const latest = (S.log || []).find(x => x.pid === r.pid && x.kind !== 'single');
+  if (latest === r && packLeft(r.pid) > 0) return ['on', 'चालू · ' + fmt(packLeft(r.pid))];
+  return ['off', 'ख़त्म'];
+}
+const when = ts => { const d = new Date(ts), t = d.toLocaleTimeString('en-IN', {hour:'numeric', minute:'2-digit'});
+  return (new Date().toDateString() === d.toDateString() ? 'आज' : d.toLocaleDateString('en-IN', {day:'numeric', month:'short'})) + ', ' + t; };
+let mpResume = false;
+function openMyPacks(){
+  const old = $('mine'); if (old) old.remove();
+  if (cur && !pv.paused){ mpResume = true; pv.pause(); } else mpResume = false;
+  const g = activeGroups(), log = S.log || [];
+  const spent = log.reduce((a, r) => a + r.paise, 0);
+  const d = document.createElement('div'); d.className = 'panel'; d.id = 'mine';
+  const runs = g.map(x => {
+    const amb = x.left < 3600e3, pct = Math.max(2, Math.round(x.left / WINDOW * 100));
+    const what = x.pack ? 'पूरा पैक · 3 वीडियो' : x.eps.map(e => 'वीडियो ' + e.order).join(', ');
+    const first = x.p.episodes.indexOf(x.eps[0]);
+    return `<div class="runcard ${amb?'amb':''}"><img class="thumb" src="${art(x.p)}" alt="">
+      <div class="ri"><div class="rn">${x.p.title}</div><div style="font-size:10.5px;color:#C9C3D4">${what}</div>
+        <div class="rt" data-mpleft="${x.p.packId}">${fmt(x.left)} बचे</div>
+        <div class="mini"><i class="${amb?'amb':''}" style="width:${pct}%"></i></div></div>
+      <button class="open" data-mpplay="${x.p.packId}:${first}">देखें ▶</button></div>`;
+  }).join('');
+  const kinds = {pack:'पूरा पैक', topup:'पैक पूरा किया', single:'एक वीडियो'};
+  const hist = log.map(r => {
+    const p = packOf(r.pid), [cls, txt] = recStatus(r);
+    const ep = r.eid ? p.episodes.find(e => e.episodeId === r.eid) : null;
+    return `<div class="hrow"><img src="${art(p)}" alt="">
+      <div class="hi2"><div class="hn">${p.title}</div>
+        <div class="hd">${kinds[r.kind]}${ep ? ' · वीडियो ' + ep.order : ''} · ${rs(r.paise)} · ${when(r.at)}</div></div>
+      ${cls === 'off' ? `<button class="again" data-mppack="${r.pid}">फिर से ${rs(packPrice(r.pid))}</button>` : `<span class="st ${cls}">${txt}</span>`}</div>`;
+  }).join('');
+  d.innerHTML = `<h2>🎟 मेरे पैक <button id="mpclose" aria-label="बंद करें">✕</button></h2>
+    ${log.length ? `
+      <div class="mp-sum"><div><b>${g.length}</b>चालू पैक</div><div><b>${log.length}</b>ख़रीदारी</div><div><b>${rs(spent)}</b>कुल · GST सहित</div></div>
+      ${g.length ? `<div class="mp-sec on">अभी चालू</div><div class="mp-runs">${runs}</div>` : ''}
+      <div class="mp-sec">ख़रीदारी का इतिहास</div>${hist}`
+    : `<div class="mp-empty">अभी तक कोई पैक नहीं ख़रीदा।<br>हर वीडियो के पहले 10 सेकंड मुफ़्त हैं — कोई भी पैक खोलकर देखें।
+        <br><button class="cta" id="mpbrowse">पैक देखें ›</button></div>`}`;
+  document.body.appendChild(d);
+  const close = resume => { d.remove(); window.__clearGuide && window.__clearGuide(); if (resume && mpResume && cur) pv.play().catch(()=>{}); };
+  $('mpclose').onclick = () => close(true);
+  const br = $('mpbrowse'); if (br) br.onclick = () => { close(false); goStore(); };
+  d.querySelectorAll('[data-mpplay]').forEach(b => b.onclick = () => {
+    const [pid, i] = b.dataset.mpplay.split(':'); close(false); openEp(pid, +i, 'my_packs'); });
+  d.querySelectorAll('[data-mppack]').forEach(b => b.onclick = () => {
+    close(false); if (cur) goStore(); openPack(b.dataset.mppack); });
+  ev('ay_my_packs_open', {active:g.length, purchases:log.length});
+}
+$('mypk').onclick = openMyPacks; $('mypk-live').onclick = openMyPacks; $('pill').onclick = openMyPacks;
+setInterval(() => {
+  refreshBadges();
+  const d = $('mine'); if (!d) return;
+  d.querySelectorAll('[data-mpleft]').forEach(el => {
+    const x = activeGroups().find(g => g.p.packId === el.dataset.mpleft);
+    if (!x){ openMyPacks(); return; }
+    el.textContent = fmt(x.left) + ' बचे';
+  });
+}, 1000);
 
 /* ---------- help ---------- */
 function openHelp(){
@@ -766,8 +887,8 @@ $('demo').addEventListener('click', e => {
   if (d === 'expire'){ S.packs = {}; S.eps = {}; save(); renderStore(); if (cur){ renderMark(); updateChip(); updatePill(); }
     toast('समय ख़त्म — अब फिर से 10 सेकंड पर रुकेगा'); ev('ay_window_expired', {all:true}); }
   if (d === 'reset'){
-    S = {packs:{}, eps:{}}; save();
-    ['succ','pack'].forEach(i => { const el = $(i); if (el) el.remove(); });
+    S = {packs:{}, eps:{}, log:[]}; save(); refreshBadges();
+    ['succ','pack','mine'].forEach(i => { const el = $(i); if (el) el.remove(); });
     closePlayer(true); setMode('live'); ci = 0; setBanner();
     const c = $('coach'); if (c) c.style.display = '';
     $('tv').play().catch(()=>{}); renderStore();
@@ -775,7 +896,7 @@ $('demo').addEventListener('click', e => {
 });
 
 /* ---------- boot ---------- */
-setMode('live'); ci = 0; setBanner(); renderStore();
+setMode('live'); ci = 0; setBanner(); renderStore(); refreshBadges();
 if (params.get('start') === 'store') goStore();
 
 /* ══ UI guide — same scaffolding as store.html, wrapped around the lifecycle ══ */
@@ -872,7 +993,12 @@ if (params.get('start') === 'store') goStore();
       : 'Paid ₹6. This video is unlocked; <b>video 2 will wall again</b>, and the pack now costs only ₹8.', 420); };
   var _goStore = goStore;
   goStore = function(){ _goStore();
-    guide('#store .pcard', 'The store is home now. <b>20 packs</b>, Hindi art by default (EN toggle above). Tap any pack.', 600); };
+    guide('#mypk', 'The store is home now. <b>🎟 मेरे पैक</b> holds every purchase: what is live, time left, and past buys to rebuy.', 600); };
+  window.__clearGuide = clearGuide;
+  var _openMine = openMyPacks;
+  openMyPacks = function(){ clearGuide(); _openMine();
+    if (document.querySelector('#mine .open')) guide('#mine .open', '<b>Live packs</b> with time left, one tap to watch. Below: every purchase, with rebuy once it ends.', 400); };
+  $('mypk').onclick = $('mypk-live').onclick = $('pill').onclick = function(){ openMyPacks(); };
   var _openPack = openPack;
   openPack = function(pid){ _openPack(pid); clearGuide(); };
   guide('#ch-up', 'Start here. <b>Press ▲</b> to change channel and reach Ayodhyatra.', 900);
