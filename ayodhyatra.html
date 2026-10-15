@@ -374,7 +374,10 @@
   .mybtn .bd{min-width:17px;height:17px;border-radius:9px;background:#D9008D;color:#fff;font-size:10px;display:flex;align-items:center;justify-content:center;padding:0 4px}
   .mybtn .bd:empty{display:none}
   #mypk-live{position:absolute;top:calc(8px + env(safe-area-inset-top,0px));right:52px;z-index:3;background:rgba(0,0,0,.55)}
-  #app.mode-store #mypk-live{display:none}
+  #app.mode-store #mypk-live,#app.mode-store #store-live{display:none}
+  #store-live{position:absolute;top:calc(44px + env(safe-area-inset-top,0px));right:52px;z-index:3;background:rgba(0,0,0,.55)}
+  #pstore{position:absolute;top:calc(56px + env(safe-area-inset-top,0px));left:58px;height:38px;z-index:4;background:rgba(0,0,0,.55)}
+  .buy.own{background:#008043}
   #pill{cursor:pointer}
   .sech .more{font-size:11px;font-weight:800;color:#FFB2E4}
   .mp-sum{display:flex;gap:8px;margin-bottom:16px}
@@ -406,6 +409,7 @@
     <div class="lv"><i></i>LIVE</div>
     <button id="tv-sound" aria-label="आवाज़">&#128263;</button>
     <button class="mybtn" id="mypk-live">🎟 मेरे पैक <span class="bd"></span></button>
+    <button class="mybtn" id="store-live">🛍 सैशे स्टोर</button>
     <div class="redline"></div>
     <div id="banner"><span class="cn">2</span><span class="nm">Dangal TV</span><button class="hb" id="helpbtn2">?</button></div>
     <div id="remote"><button id="ch-up" aria-label="अगला चैनल">▲</button><span class="lbl">CH</span><button id="ch-dn" aria-label="पिछला चैनल">▼</button></div>
@@ -424,6 +428,7 @@
   <div id="chip"><span class="dot"></span><span class="nm"></span><span class="ct">मुफ़्त</span></div>
   <div id="pill"></div>
   <button id="pback" aria-label="वापस">‹</button>
+  <button class="mybtn" id="pstore">🛍 स्टोर</button>
   <div id="free"><span class="ring"></span><span id="freetx">10 सेकंड मुफ़्त</span></div>
   <button id="punmute" class="hide">🔊 आवाज़ चालू करें</button>
   <div id="pprog"><i></i></div>
@@ -468,7 +473,7 @@ const K = 'wiom-ayo-v1';
 const load = () => { try { return JSON.parse(localStorage.getItem(K)) || {}; } catch { return {}; } };
 const save = () => { try { localStorage.setItem(K, JSON.stringify(S)); } catch {} };
 let S = params.get('reset') === '1' ? {} : load();
-S.packs = S.packs || {}; S.eps = S.eps || {};
+S.packs = S.packs || {}; S.eps = S.eps || {}; S.apps = S.apps || {};
 if (params.get('lang') === 'en') S.lang = 'en';
 const now = () => Date.now();
 const packLeft = pid => Math.max(0, (S.packs[pid] || 0) - now());
@@ -481,6 +486,36 @@ const fmt = ms => { const m = Math.ceil(ms / 60000), h = Math.floor(m / 60);
   return h > 0 ? h + ' घं. ' + (m % 60) + ' मि.' : m + ' मिनट'; };
 const mmss = s => Math.floor(s / 60) + ':' + String(Math.round(s % 60)).padStart(2, '0');
 const art = p => p.art[S.lang === 'en' ? 'en' : 'hi'];
+
+/* ---------- the rest of the Sachet Store (same ₹10 app passes as store.html) ---------- */
+const AP = 'ayodhyatra/apps/', APP_PAISE = 1000;
+const APPS = {
+  dashverse: { name:'Dashverse', hours:12, logo:AP+'L_dashverse.png', desc:'माइक्रोड्रामा · 200+ शोज़',
+    shows:[{title:'ज़हर सा',poster:AP+'P_dv_p1.jpg'},{title:'मिशन मम्मी',poster:AP+'P_dv_p2.jpg'},
+           {title:'दे घुमा के',poster:AP+'P_dv_p3.jpg'},{title:'पहली मुलाक़ात',poster:AP+'P_dv_p1.jpg'}]},
+  sonyliv: { name:'SonyLIV', hours:4, logo:AP+'L_sonyliv.png', desc:'फ़िल्में · ओरिजिनल्स · क्रिकेट',
+    shows:[{title:'Athiradi',poster:AP+'P_sl_p1.jpg'},{title:'Balti',poster:AP+'P_sl_p2.jpg'},
+           {title:"India's Best Dancer",poster:AP+'P_sl_p3.jpg'}]},
+  zee5: { name:'ZEE5', hours:6, logo:AP+'L_zee5.png', desc:'फ़िल्में · सीरियल्स · ओरिजिनल्स',
+    shows:[{title:'KD — The Devil',poster:AP+'P_z5_p1.jpg'},{title:'Abar Proloy 2',poster:AP+'P_z5_p2.jpg'},
+           {title:'Sandalwood',poster:AP+'P_z5_p3.jpg'}]}
+};
+const appLeft = k => Math.max(0, (S.apps[k] || 0) - now());
+const appGroups = () => Object.keys(APPS).filter(k => appLeft(k) > 0)
+  .map(k => ({ app:k, a:APPS[k], left:appLeft(k) })).sort((x, y) => x.left - y.left);
+function appBlock(k){
+  const a = APPS[k], left = appLeft(k);
+  return `<div class="appblk"><div class="apphd"><img src="${a.logo}" alt="${a.name}">
+      <div class="ai"><div class="an">${a.name}</div><div class="ad">${left > 0 ? `✓ चालू · ${fmt(left)} बचे` : a.desc}</div></div>
+      ${left > 0 ? `<button class="buy own" data-appopen="${k}"><div class="pr">खोलें</div><div class="du">${fmt(left)}</div></button>`
+                 : `<button class="buy" data-buy="${k}"><div class="pr">${rs(APP_PAISE)}</div><div class="du">${a.hours} घंटे</div></button>`}</div>
+    <div class="prow">${a.shows.map(s => `<button class="pi" data-app="${k}"><img src="${s.poster}" alt="${s.title}" loading="lazy"><div class="pt">${s.title}</div></button>`).join('')}</div></div>`;
+}
+const otherPacks = () => `<div><div class="sech"><span class="t">और पैक · Wiom सैशे स्टोर</span><span class="hint">${rs(APP_PAISE)} · उस ऐप का सब कुछ</span></div>
+  ${Object.keys(APPS).map(appBlock).join('')}</div>`;
+function openApp(k){ const a = APPS[k];
+  if (appLeft(k) > 0){ ev('ay_app_open', {app:k}); toast(`${a.name} खुल रहा है… (डेमो: असली ऐप यहाँ खुलेगा)`); }
+  else openAppWall(k, 'shelf'); }
 
 /* ---------- live TV underneath (identical to store.html) ---------- */
 (function initTV(){
@@ -543,7 +578,8 @@ function tagFor(p){
 function renderStore(){
   const out = [];
   const running = PACKS.filter(p => packLeft(p.packId) > 0 || p.episodes.some(e => epLeft(e.episodeId) > 0));
-  if (running.length){
+  const runApps = appGroups();
+  if (running.length || runApps.length){
     out.push(`<div><div class="sech"><span class="t on">चालू</span><button class="more" data-mine="1">मेरे पैक · सब देखें ›</button></div><div class="runs">` +
       running.map(p => {
         const pl = packLeft(p.packId);
@@ -555,7 +591,11 @@ function renderStore(){
             <div class="rt" data-left="${p.packId}">${fmt(left)} बचे</div>
             <div class="mini"><i class="${amb?'amb':''}" style="width:${pct}%"></i></div></div>
           <button class="open" data-pack="${p.packId}">देखें</button></div>`;
-      }).join('') + `</div></div>`);
+      }).join('') + runApps.map(g => `<div class="runcard ${g.left < 3600e3 ? 'amb' : ''}"><img src="${g.a.logo}" alt="">
+          <div class="ri"><div class="rn">${g.a.name}</div><div style="font-size:10.5px;color:#C9C3D4">ऐप पास · ${g.a.hours} घंटे</div>
+            <div class="rt" data-appleft="${g.app}">${fmt(g.left)} बचे</div>
+            <div class="mini"><i style="width:${Math.max(2, Math.round(g.left / (g.a.hours * 3600e3) * 100))}%"></i></div></div>
+          <button class="open" data-appopen="${g.app}">खोलें</button></div>`).join('') + `</div></div>`);
   }
   out.push(`<div>
     <div class="sellerhd"><div class="slogo">अ</div>
@@ -567,10 +607,13 @@ function renderStore(){
   out.push(`<div><div class="sech"><span class="t">सारे पैक</span><span class="hint">हर वीडियो के 10 सेकंड मुफ़्त</span></div>
     <div class="pgrid">${PACKS.map(p => `<button class="pcard" data-pack="${p.packId}">
       <img src="${art(p)}" alt="${p.title}" loading="lazy">${tagFor(p)}</button>`).join('')}</div></div>`);
+  out.push(otherPacks());
   $('store').innerHTML = out.join('');
 }
 $('store').addEventListener('click', e => {
   if (e.target.closest('[data-mine]')) return openMyPacks();
+  const ab = e.target.closest('[data-buy],[data-appopen],[data-app]');
+  if (ab) return openApp(ab.dataset.buy || ab.dataset.appopen || ab.dataset.app);
   const l = e.target.closest('[data-lang]');
   if (l){ S.lang = l.dataset.lang; save(); renderStore(); ev('ay_lang', {lang:S.lang}); return; }
   const b = e.target.closest('[data-pack]');
@@ -583,6 +626,8 @@ setInterval(() => {
     if (left <= 0) { renderStore(); ev('ay_window_expired', {packId:p.packId}); return; }
     el.textContent = fmt(left) + ' बचे';
   });
+  document.querySelectorAll('#store [data-appleft]').forEach(el => {
+    const l = appLeft(el.dataset.appleft); if (l <= 0) return renderStore(); el.textContent = fmt(l) + ' बचे'; });
   if (cur) updatePill();
 }, 1000);
 
@@ -693,6 +738,8 @@ pv.addEventListener('ended', () => {
   else { const pid = cur.pid; ev('ay_pack_finished', {packId:pid}); goStore(); openPack(pid); }
 });
 $('pback').onclick = goStore;
+$('pstore').onclick = () => { ev('ay_store_entry', {from:'player'}); goStore(); };
+$('store-live').onclick = () => { dismissCoach(); ev('ay_store_entry', {from:'live_tv'}); goStore(); };
 $('punmute').onclick = () => { pv.muted = false; forced = false; $('punmute').classList.add('hide'); };
 document.addEventListener('click', e => {
   if (!forced || pv.muted === false) return;
@@ -720,16 +767,27 @@ function openWall(pid, idx, from){
   $('sheet').classList.add('up'); $('scrim').classList.add('on');
   ev('ay_wall_shown', {packId:pid, episodeId:e && e.episodeId, from, packPricePaise:pp, creditPaise:c});
 }
-function wallPrice(){ return W.choice === 'pack' ? packPrice(W.pid) : P.singlePaise; }
+function openAppWall(k, from){
+  const a = APPS[k]; W = { app: k, choice: 'app' };
+  $('sh-title').textContent = `${a.name} का पैक लें`;
+  $('sh-sub').innerHTML = `<b>${a.name}</b> · ${a.desc}`;
+  $('opts').innerHTML = `<button class="opt sel" data-o="app"><span class="rd"></span><div class="oi">
+      <div class="ol">${a.name} · सब कुछ</div><div class="os">${a.hours} घंटे तक, जितना चाहें</div></div>
+      <div class="op">${rs(APP_PAISE)}</div></button>`;
+  setPayLabel();
+  $('sheet').classList.add('up'); $('scrim').classList.add('on');
+  ev('ay_app_wall_shown', {app:k, from});
+}
+function wallPrice(){ if (W.app) return APP_PAISE; return W.choice === 'pack' ? packPrice(W.pid) : P.singlePaise; }
 function setPayLabel(){ $('paybtn').querySelector('.lbl').textContent = `UPI से ${rs(wallPrice())} दें`; }
 $('opts').addEventListener('click', e => {
-  const o = e.target.closest('[data-o]'); if (!o || !W) return;
+  const o = e.target.closest('[data-o]'); if (!o || !W || W.app) return;
   W.choice = o.dataset.o;
   $('opts').querySelectorAll('.opt').forEach(x => x.classList.toggle('sel', x === o));
   setPayLabel(); ev('ay_option_pick', {choice:W.choice, packId:W.pid});
 });
 function closeSheet(){ $('sheet').classList.remove('up'); $('scrim').classList.remove('on'); }
-$('skipbtn').onclick = () => { if (!W) return closeSheet(); ev('ay_wall_dismiss', {packId:W.pid}); closeSheet();
+$('skipbtn').onclick = () => { if (!W || W.app) return closeSheet(); ev('ay_wall_dismiss', {packId:W.pid}); closeSheet();
   if (cur){ const pid = cur.pid; goStore(); openPack(pid); } };
 $('scrim').onclick = () => $('skipbtn').onclick();
 
@@ -741,8 +799,15 @@ $('paybtn').onclick = () => {
   b.querySelector('.lbl').innerHTML = '<span class="spin"></span> UPI ऐप खुल रहा है…';
   setTimeout(() => { b.querySelector('.lbl').textContent = 'पेमेंट कन्फ़र्म हो रहा है…'; }, 900);
   setTimeout(() => {
-    const until = now() + WINDOW, p = packOf(w.pid);
     S.log = S.log || [];
+    if (w.app){
+      S.apps[w.app] = now() + APPS[w.app].hours * 3600e3;
+      S.log.unshift({ app: w.app, kind: 'app', paise, at: now() });
+      save(); b.classList.remove('busy'); closeSheet(); renderStore();
+      ev('ay_pay_success', {choice:'app', app:w.app, paise});
+      return showUnlocked(w, paise);
+    }
+    const until = now() + WINDOW, p = packOf(w.pid);
     if (w.choice === 'pack'){
       /* singles still live in this pack ride on the pack from here */
       S.log.forEach(r => { if (r.pid === w.pid && r.kind === 'single' && epLeft(r.eid) > 0) r.merged = 1; });
@@ -760,8 +825,18 @@ $('paybtn').onclick = () => {
   }, 2100);
 };
 function showUnlocked(w, paise){
-  const p = packOf(w.pid);
   const d = document.createElement('div'); d.className = 'center'; d.id = 'succ';
+  if (w.app){ const a = APPS[w.app];
+    d.innerHTML = `<div class="tick">✓</div><div class="t">${a.name} पैक चालू — ${rs(paise)}</div>
+      <div class="s">${a.name} का सब कुछ, अगले ${a.hours} घंटे तक</div>
+      <button class="cta" id="keepwatch">${a.name} खोलें ▶</button>
+      <button class="alt" id="seemine">यह ख़रीदारी 🎟 मेरे पैक में रहेगी ›</button>`;
+    document.body.appendChild(d); refreshBadges();
+    $('seemine').onclick = () => { d.remove(); openMyPacks(); };
+    $('keepwatch').onclick = () => { d.remove(); openApp(w.app); };
+    return;
+  }
+  const p = packOf(w.pid);
   d.innerHTML = `<div class="tick">✓</div>
     <div class="t">${w.choice === 'pack' ? 'पूरा पैक अनलॉक' : 'वीडियो अनलॉक'} — ${rs(paise)}</div>
     <div class="s">${w.choice === 'pack' ? `<b>${p.title}</b> के तीनों वीडियो` : 'यह वीडियो'} अगले 24 घंटे तक, जितनी बार चाहें</div>
@@ -787,10 +862,12 @@ function activeGroups(){
   }).filter(g => g.left > 0).sort((a, b) => a.left - b.left);
 }
 function refreshBadges(){
-  const n = activeGroups().length;
+  const n = activeGroups().length + appGroups().length;
   document.querySelectorAll('.mybtn .bd').forEach(b => b.textContent = n ? n : '');
 }
 function recStatus(r){
+  if (r.app){ const latest = (S.log || []).find(x => x.app === r.app);
+    return latest === r && appLeft(r.app) > 0 ? ['on', 'चालू · ' + fmt(appLeft(r.app))] : ['off', 'ख़त्म']; }
   if (r.kind === 'single'){
     if (epLeft(r.eid) > 0) return ['on', 'चालू · ' + fmt(epLeft(r.eid))];
     if (r.merged) return ['mg', packLeft(r.pid) > 0 ? 'पैक में जुड़ गया' : 'पैक में जुड़ा था'];
@@ -806,7 +883,7 @@ let mpResume = false;
 function openMyPacks(){
   const old = $('mine'); if (old) old.remove();
   if (cur && !pv.paused){ mpResume = true; pv.pause(); } else mpResume = false;
-  const g = activeGroups(), log = S.log || [];
+  const g = activeGroups(), ga = appGroups(), log = S.log || [], live = g.length + ga.length;
   const spent = log.reduce((a, r) => a + r.paise, 0);
   const d = document.createElement('div'); d.className = 'panel'; d.id = 'mine';
   const runs = g.map(x => {
@@ -818,9 +895,17 @@ function openMyPacks(){
         <div class="rt" data-mpleft="${x.p.packId}">${fmt(x.left)} बचे</div>
         <div class="mini"><i class="${amb?'amb':''}" style="width:${pct}%"></i></div></div>
       <button class="open" data-mpplay="${x.p.packId}:${first}">देखें ▶</button></div>`;
-  }).join('');
+  }).join('') + ga.map(x => `<div class="runcard ${x.left < 3600e3 ? 'amb' : ''}"><img class="thumb" src="${x.a.logo}" alt="" style="height:34px">
+      <div class="ri"><div class="rn">${x.a.name}</div><div style="font-size:10.5px;color:#C9C3D4">ऐप पास · सब कुछ</div>
+        <div class="rt" data-mpapp="${x.app}">${fmt(x.left)} बचे</div>
+        <div class="mini"><i style="width:${Math.max(2, Math.round(x.left / (x.a.hours * 3600e3) * 100))}%"></i></div></div>
+      <button class="open" data-appopen="${x.app}">खोलें ▶</button></div>`).join('');
   const kinds = {pack:'पूरा पैक', topup:'पैक पूरा किया', single:'एक वीडियो'};
   const hist = log.map(r => {
+    if (r.app){ const a = APPS[r.app], [cls, txt] = recStatus(r);
+      return `<div class="hrow"><img src="${a.logo}" alt="" style="height:30px">
+        <div class="hi2"><div class="hn">${a.name}</div><div class="hd">ऐप पास · ${a.hours} घंटे · ${rs(r.paise)} · ${when(r.at)}</div></div>
+        ${cls === 'off' ? `<button class="again" data-buy="${r.app}">फिर से ${rs(APP_PAISE)}</button>` : `<span class="st ${cls}">${txt}</span>`}</div>`; }
     const p = packOf(r.pid), [cls, txt] = recStatus(r);
     const ep = r.eid ? p.episodes.find(e => e.episodeId === r.eid) : null;
     return `<div class="hrow"><img src="${art(p)}" alt="">
@@ -830,20 +915,31 @@ function openMyPacks(){
   }).join('');
   d.innerHTML = `<h2>🎟 मेरे पैक <button id="mpclose" aria-label="बंद करें">✕</button></h2>
     ${log.length ? `
-      <div class="mp-sum"><div><b>${g.length}</b>चालू पैक</div><div><b>${log.length}</b>ख़रीदारी</div><div><b>${rs(spent)}</b>कुल · GST सहित</div></div>
-      ${g.length ? `<div class="mp-sec on">अभी चालू</div><div class="mp-runs">${runs}</div>` : ''}
+      <div class="mp-sum"><div><b>${live}</b>चालू पैक</div><div><b>${log.length}</b>ख़रीदारी</div><div><b>${rs(spent)}</b>कुल · GST सहित</div></div>
+      ${live ? `<div class="mp-sec on">अभी चालू</div><div class="mp-runs">${runs}</div>` : ''}
       <div class="mp-sec">ख़रीदारी का इतिहास</div>${hist}`
     : `<div class="mp-empty">अभी तक कोई पैक नहीं ख़रीदा।<br>हर वीडियो के पहले 10 सेकंड मुफ़्त हैं — कोई भी पैक खोलकर देखें।
-        <br><button class="cta" id="mpbrowse">पैक देखें ›</button></div>`}`;
+        <br><button class="cta" id="mpbrowse">पैक देखें ›</button></div>`}
+    <div class="mp-sec" style="margin-top:22px">सारे पैक · Wiom सैशे स्टोर</div>
+    <div class="appblk"><div class="apphd"><div class="slogo" style="width:34px;height:34px;font-size:17px">अ</div>
+      <div class="ai"><div class="an">अयोध्यात्रा</div><div class="ad">${PACKS.length} पैक · ${rs(P.packPaise)} पैक / ${rs(P.singlePaise)} वीडियो · 24 घंटे</div></div>
+      <button class="buy" id="mpayo"><div class="pr">देखें</div><div class="du">${PACKS.length} पैक</div></button></div>
+      <div class="prow">${PACKS.map(p => `<button class="pi" data-mppack="${p.packId}"><img src="${art(p)}" alt="" loading="lazy"><div class="pt">${p.title}</div></button>`).join('')}</div></div>
+    ${Object.keys(APPS).map(appBlock).join('')}`;
   document.body.appendChild(d);
   const close = resume => { d.remove(); window.__clearGuide && window.__clearGuide(); if (resume && mpResume && cur) pv.play().catch(()=>{}); };
   $('mpclose').onclick = () => close(true);
   const br = $('mpbrowse'); if (br) br.onclick = () => { close(false); goStore(); };
+  $('mpayo').onclick = () => { close(false); goStore(); };
+  d.querySelectorAll('[data-buy],[data-appopen],[data-app]').forEach(b => b.onclick = () => {
+    const k = b.dataset.buy || b.dataset.appopen || b.dataset.app;
+    if (appLeft(k) <= 0) close(false);
+    openApp(k); });
   d.querySelectorAll('[data-mpplay]').forEach(b => b.onclick = () => {
     const [pid, i] = b.dataset.mpplay.split(':'); close(false); openEp(pid, +i, 'my_packs'); });
   d.querySelectorAll('[data-mppack]').forEach(b => b.onclick = () => {
     close(false); if (cur) goStore(); openPack(b.dataset.mppack); });
-  ev('ay_my_packs_open', {active:g.length, purchases:log.length});
+  ev('ay_my_packs_open', {active:live, purchases:log.length});
 }
 $('mypk').onclick = openMyPacks; $('mypk-live').onclick = openMyPacks; $('pill').onclick = openMyPacks;
 setInterval(() => {
@@ -854,6 +950,8 @@ setInterval(() => {
     if (!x){ openMyPacks(); return; }
     el.textContent = fmt(x.left) + ' बचे';
   });
+  d.querySelectorAll('[data-mpapp]').forEach(el => {
+    const l = appLeft(el.dataset.mpapp); if (l <= 0) return openMyPacks(); el.textContent = fmt(l) + ' बचे'; });
 }, 1000);
 
 /* ---------- help ---------- */
@@ -883,11 +981,12 @@ $('demo').addEventListener('click', e => {
   if (d === 'low'){ const t = now() + 2 * 60e3;
     Object.keys(S.packs).forEach(k => { if (S.packs[k] > now()) S.packs[k] = t; });
     Object.values(S.eps).forEach(v => { if (v.until > now()) v.until = t; });
+    Object.keys(S.apps).forEach(k => { if (S.apps[k] > now()) S.apps[k] = t; });
     save(); renderStore(); toast('चालू पैक में अब 2 मिनट बचे'); }
-  if (d === 'expire'){ S.packs = {}; S.eps = {}; save(); renderStore(); if (cur){ renderMark(); updateChip(); updatePill(); }
+  if (d === 'expire'){ S.packs = {}; S.eps = {}; S.apps = {}; save(); refreshBadges(); renderStore(); if (cur){ renderMark(); updateChip(); updatePill(); }
     toast('समय ख़त्म — अब फिर से 10 सेकंड पर रुकेगा'); ev('ay_window_expired', {all:true}); }
   if (d === 'reset'){
-    S = {packs:{}, eps:{}, log:[]}; save(); refreshBadges();
+    S = {packs:{}, eps:{}, apps:{}, log:[]}; save(); refreshBadges();
     ['succ','pack','mine'].forEach(i => { const el = $(i); if (el) el.remove(); });
     closePlayer(true); setMode('live'); ci = 0; setBanner();
     const c = $('coach'); if (c) c.style.display = '';
@@ -979,6 +1078,8 @@ if (params.get('start') === 'store') goStore();
   var _tune = tuneChannel;
   tuneChannel = function(d){ clearGuide(); _tune(d);
     guide('#free', 'Channel 22 plays Ayodhyatra. <b>Every locked video is free for 10 seconds</b> — the counter shows how much is left.', 1300); };
+  var _openAppWall = openAppWall;
+  openAppWall = function(k, from){ _openAppWall(k, from); guide('#paybtn', 'Another partner on the same store. <b>₹10 unlocks the whole app</b> for a few hours.', 520); };
   var _openWall = openWall;
   openWall = function(pid, idx, from){ _openWall(pid, idx, from);
     guide('#paybtn', idx == null
@@ -988,6 +1089,7 @@ if (params.get('start') === 'store') goStore();
   closeSheet = function(){ _closeSheet(); clearGuide(); };
   var _showUnlocked = showUnlocked;
   showUnlocked = function(w, p){ _showUnlocked(w, p);
+    if (w.app) return guide('#keepwatch', 'Same wallet, same checkout. <b>Other partners\' ₹10 passes</b> sit next to Ayodhyatra in 🎟 मेरे पैक.', 420);
     guide('#keepwatch', w.choice === 'pack'
       ? 'Paid. <b>Playback resumes at 0:10</b>, then the next two videos roll on with no wall for 24 hours.'
       : 'Paid ₹6. This video is unlocked; <b>video 2 will wall again</b>, and the pack now costs only ₹8.', 420); };
@@ -1001,6 +1103,7 @@ if (params.get('start') === 'store') goStore();
   $('mypk').onclick = $('mypk-live').onclick = $('pill').onclick = function(){ openMyPacks(); };
   var _openPack = openPack;
   openPack = function(pid){ _openPack(pid); clearGuide(); };
+  $('store-live').onclick = function(){ dismissCoach(); ev('ay_store_entry', {from:'live_tv'}); goStore(); };
   guide('#ch-up', 'Start here. <b>Press ▲</b> to change channel and reach Ayodhyatra.', 900);
 })();
 </script>
